@@ -5,13 +5,8 @@ public class Range {
     private double to;
 
     public Range(double from, double to) {
-        if (from <= to) {
-            this.from = from;
-            this.to = to;
-        } else {
-            this.from = to;
-            this.to = from;
-        }
+        this.from = from;
+        this.to = to;
     }
 
     public double getFrom() {
@@ -35,7 +30,7 @@ public class Range {
     }
 
     public boolean isInside(double number) {
-        return from <= number & to >= number;
+        return from <= number && to >= number;
     }
 
     @Override
@@ -44,11 +39,14 @@ public class Range {
     }
 
     public Range getIntersection(Range range) {
-        if (Math.min(to, range.to) - Math.max(from, range.from) <= 0) {
+        double minTo = Math.min(to, range.to);
+        double maxFrom = Math.min(to, range.to);
+
+        if (minTo - maxFrom <= 0) {
             return null;
         }
 
-        return new Range(Math.max(from, range.from), Math.min(to, range.to));
+        return new Range(maxFrom, minTo);
     }
 
     public Range[] getUnion(Range range) {
@@ -60,28 +58,20 @@ public class Range {
     }
 
     public Range[] getDifference(Range range) {
-        if (Math.min(to, range.to) - Math.max(from, range.from) <= 0) {
+        if (Math.min(to, range.to) <= Math.max(from, range.from)) {
             return new Range[]{new Range(from, to)};
         }
 
         if (range.to >= to && range.from <= from) {
-            return null;
+            return new Range[]{};
         }
 
-        if (range.from < from) {
+        if (range.from <= from) {
             return new Range[]{new Range(range.to, to)};
         }
 
-        if (range.to > to) {
+        if (range.to >= to) {
             return new Range[]{new Range(from, range.from)};
-        }
-
-        if (range.from == from) {
-            return new Range[]{new Range(to, range.to)};
-        }
-
-        if (range.to == to) {
-            return new Range[]{new Range(range.from, from)};
         }
 
         return new Range[]{new Range(range.from, from), new Range(to, range.to)};
