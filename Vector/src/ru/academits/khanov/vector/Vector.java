@@ -3,14 +3,14 @@ package ru.academits.khanov.vector;
 import java.util.Arrays;
 
 public class Vector {
-    private double[] vector;
+    private final double[] elements;
 
     public Vector(int n) {
         if (n <= 0) {
             throw new IllegalArgumentException("Размерность вектора не может быть отрецательной");
         }
 
-        vector = new double[n];
+        elements = new double[n];
     }
 
     public Vector(Vector vector) {
@@ -18,7 +18,11 @@ public class Vector {
             throw new IllegalArgumentException("Вектор не может быть null");
         }
 
-        this.vector = vector.getVector();
+        elements = new double[vector.getSize()];
+
+        for (int i = 0; i < vector.getSize(); i++) {
+            setComponent(i, vector.getComponent(i));
+        }
     }
 
     public Vector(double[] array) {
@@ -26,11 +30,15 @@ public class Vector {
             throw new IllegalArgumentException("Массив не может быть null");
         }
 
-        this.vector = array;
+        elements = new double[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            setComponent(i, array[i]);
+        }
     }
 
-    public Vector(int n, double[] array) {
-        if (n < 0) {
+    public Vector(int dimension, double[] array) {
+        if (dimension < 0) {
             throw new IllegalArgumentException("Размерность вектора не может быть отрецательной");
         }
 
@@ -38,140 +46,133 @@ public class Vector {
             throw new IllegalArgumentException("Массив не может быть null");
         }
 
-        vector = new double[n];
+        elements = new double[dimension];
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < dimension; i++) {
             if (i < array.length) {
-                this.vector[i] = array[i];
-            } else {
-                this.vector[i] = 0;
+                this.elements[i] = array[i];
             }
         }
     }
 
-    public double[] getVector() {
-        return this.vector;
-    }
-
-    public void setVector(double[] vector) {
-        if (vector == null) {
-            throw new IllegalArgumentException("Массив не может быть null");
-        }
-
-        this.vector = vector;
-    }
-
     @Override
     public String toString() {
-        return Arrays.toString(vector);
+        return Arrays.toString(elements).replace('[', '{').replace(']', '}');
     }
 
     @Override
     public int hashCode() {
         final int prime = 41;
         int hash = 1;
-        hash = prime * hash + Arrays.hashCode(vector);
+        hash = prime * hash + Arrays.hashCode(elements);
         return hash;
     }
 
     @Override
-    public boolean equals(Object vector) {
-        if (!(vector instanceof Vector)) {
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj == null || obj.getClass() != getClass()) {
             return false;
         }
 
-        return (vector == this) || (this.vector == ((Vector) vector).vector);
+        Vector vector = (Vector) obj;
+
+        return (Arrays.equals(elements, vector.elements));
     }
 
     public int getSize() {
-        return vector.length;
+        return elements.length;
     }
 
     public Vector add(Vector vector) {
-        if (this.vector == null || vector == null) {
+        if (this.elements == null) {
             throw new IllegalArgumentException("Вектор не может быть null");
         }
 
-        double[] tempArray = new double[Math.max(getSize(), vector.getSize())];
+        if (vector == null) {
+            throw new IllegalArgumentException("Аргумент не может быть null");
+        }
 
-        for (int i = 0; i < tempArray.length; i++) {
+        Vector tempVector = new Vector(Math.max(getSize(), vector.getSize()));
+
+        for (int i = 0; i < tempVector.getSize(); i++) {
             if (i < getSize()) {
-                tempArray[i] += this.vector[i];
+                tempVector.elements[i] += getComponent(i);
             }
 
             if (i < vector.getSize()) {
-                tempArray[i] += vector.vector[i];
+                tempVector.elements[i] += vector.getComponent(i);
             }
         }
 
-        this.setVector(tempArray);
-
-        return this;
+        return tempVector;
     }
 
     public Vector subtract(Vector vector) {
-        if (this.vector == null || vector == null) {
+        if (this.elements == null) {
             throw new IllegalArgumentException("Вектор не может быть null");
         }
 
-        double[] tempArray = new double[Math.max(getSize(), vector.getSize())];
+        if (vector == null) {
+            throw new IllegalArgumentException("Аргумент не может быть null");
+        }
 
-        for (int i = 0; i < tempArray.length; i++) {
+        Vector tempVector = new Vector(Math.max(getSize(), vector.getSize()));
+
+        for (int i = 0; i < tempVector.getSize(); i++) {
             if (i < getSize()) {
-                tempArray[i] += this.vector[i];
+                tempVector.elements[i] += getComponent(i);
             }
+
             if (i < vector.getSize()) {
-                tempArray[i] -= vector.vector[i];
+                tempVector.elements[i] -= vector.getComponent(i);
             }
         }
 
-        this.setVector(tempArray);
-
-        return this;
+        return tempVector;
     }
 
-    public Vector scalarMultiplication(double scalar) {
+    public Vector numberMultiplication(double scalar) {
         for (int i = 0; i < getSize(); i++) {
-            vector[i] *= scalar;
+            elements[i] *= scalar;
         }
 
         return this;
     }
 
     public Vector turn() {
-        for (int i = 0; i < getSize(); i++) {
-            vector[i] *= -1;
-        }
-
-        return this;
+        return this.numberMultiplication(-1);
     }
 
     public double getLength() {
         double sum = 0;
 
-        for (int i = 0; i < getSize(); i++) {
-            sum += Math.pow(vector[i], 2);
+        for (double element : elements) {
+            sum += Math.pow(element, 2);
         }
 
         return Math.sqrt(sum);
     }
 
-    public Vector setComponent(int index, double component) {
-        if (index < 0 || index >= vector.length) {
-            throw new IllegalArgumentException("Индекс выходит за пределы размера вектора");
+    public double getComponent(int index) {
+        if (index < 0 || index >= elements.length) {
+            throw new ArrayIndexOutOfBoundsException("Индекс выходит за пределы размера вектора");
         }
 
-        vector[index] = component;
-
-        return this;
+        return elements[index];
     }
 
-    public double getComponent(int index) {
-        if (index < 0 || index >= vector.length) {
-            throw new IllegalArgumentException("Индекс выходит за пределы размера вектора");
+    public Vector setComponent(int index, double component) {
+        if (index < 0 || index >= elements.length) {
+            throw new ArrayIndexOutOfBoundsException("Индекс выходит за пределы размера вектора");
         }
 
-        return vector[index];
+        elements[index] = component;
+
+        return this;
     }
 
     public static Vector sum(Vector vector1, Vector vector2) {
@@ -179,7 +180,10 @@ public class Vector {
             throw new IllegalArgumentException("Вектор не может быть null");
         }
 
-        return new Vector(vector1.add(vector2));
+        Vector tempVector1 = new Vector(vector1);
+        Vector tempVector2 = new Vector(vector2);
+
+        return new Vector(tempVector1.add(tempVector2));
     }
 
     public static Vector subtract(Vector vector1, Vector vector2) {
@@ -187,28 +191,23 @@ public class Vector {
             throw new IllegalArgumentException("Вектор не может быть null");
         }
 
-        return new Vector(vector1.add(vector2));
+        Vector tempVector1 = new Vector(vector1);
+        Vector tempVector2 = new Vector(vector2);
+
+        return new Vector(tempVector1.subtract(tempVector2));
     }
 
-    public static Vector multiplication(Vector vector1, Vector vector2) {
+    public static double getMultiplication(Vector vector1, Vector vector2) {
         if (vector1 == null || vector2 == null) {
             throw new IllegalArgumentException("Вектор не может быть null");
         }
 
-        double[] tempArray = new double[Math.max(vector1.getSize(), vector2.getSize())];
+        double vectorsMultiplication = 0;
 
-        for (int i = 0; i < tempArray.length; i++) {
-            tempArray[i] = 1;
-
-            if (i < vector1.getSize()) {
-                tempArray[i] *= vector1.vector[i];
-            }
-
-            if (i < vector2.getSize()) {
-                tempArray[i] *= vector2.vector[i];
-            }
+        for (int i = 0; i < Math.min(vector1.getSize(), vector2.getSize()); i++) {
+            vectorsMultiplication += vector1.elements[i] * vector2.elements[i];
         }
 
-        return new Vector(tempArray);
+        return vectorsMultiplication;
     }
 }
