@@ -1,4 +1,4 @@
-package ru.academits.khanov.main;
+package ru.academits.khanov.vector.main;
 
 import ru.academits.khanov.vector.Vector;
 
