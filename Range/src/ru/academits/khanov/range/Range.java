@@ -40,9 +40,9 @@ public class Range {
 
     public Range getIntersection(Range range) {
         double minTo = Math.min(to, range.to);
-        double maxFrom = Math.min(to, range.to);
+        double maxFrom = Math.max(from, range.from);
 
-        if (minTo - maxFrom <= 0) {
+        if (minTo <= maxFrom) {
             return null;
         }
 
@@ -50,7 +50,7 @@ public class Range {
     }
 
     public Range[] getUnion(Range range) {
-        if (Math.min(to, range.to) - Math.max(from, range.from) < 0) {
+        if (Math.min(to, range.to) < Math.max(from, range.from)) {
             return new Range[]{new Range(from, to), new Range(range.from, range.to)};
         }
 
@@ -67,13 +67,14 @@ public class Range {
         }
 
         if (range.from <= from) {
-            return new Range[]{new Range(range.to, to)};
+            return new Range[]{new Range(Math.min(range.to, to), Math.max(range.to, to))};
         }
 
         if (range.to >= to) {
-            return new Range[]{new Range(from, range.from)};
+            return new Range[]{new Range(Math.min(from, range.from), Math.max(from, range.from))};
         }
 
-        return new Range[]{new Range(range.from, from), new Range(to, range.to)};
+        return new Range[]{new Range(Math.min(from, range.from), Math.max(from, range.from)),
+                new Range(Math.min(range.to, to), Math.max(range.to, to))};
     }
 }
