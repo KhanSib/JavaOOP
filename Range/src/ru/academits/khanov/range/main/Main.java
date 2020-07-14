@@ -1,4 +1,4 @@
-package ru.academits.khanov.main;
+package ru.academits.khanov.range.main;
 
 import ru.academits.khanov.range.Range;
 
@@ -26,6 +26,14 @@ public class Main {
             System.out.println(a.getIntersection(b));
         }
 
+        System.out.print("Пересечение отрезков c и a: ");
+
+        if (c.getIntersection(a) == null) {
+            System.out.println("Пересечения нет");
+        } else {
+            System.out.println(c.getIntersection(a));
+        }
+
         System.out.print("Объединение отрезков a и c: ");
         System.out.println(Arrays.toString(a.getUnion(c)));
 
@@ -34,5 +42,8 @@ public class Main {
 
         System.out.print("Разность отрезков b \\ c: ");
         System.out.println(Arrays.toString(b.getDifference(c)));
+
+        System.out.print("Разность отрезков c \\ a: ");
+        System.out.println(Arrays.toString(c.getDifference(a)));
     }
 }
