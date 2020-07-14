@@ -1,4 +1,6 @@
-package ru.academits.khanov.shape;
+package ru.academits.khanov.shape.shapes;
+
+import ru.academits.khanov.shape.Shape;
 
 public class Triangle implements Shape {
     private final double x1;
@@ -102,16 +104,7 @@ public class Triangle implements Shape {
 
         Triangle triangle = (Triangle) obj;
 
-        double thisSideA = getLength(x1, y1, x2, y2);
-        double thisSideB = getLength(x1, y1, x3, y3);
-        double thisSideC = getLength(x2, y2, x3, y3);
-
-        double otherSideA = getLength(triangle.x1, triangle.y1, triangle.x2, triangle.y2);
-        double otherSideB = getLength(triangle.x1, triangle.y1, triangle.x3, triangle.y3);
-        double otherSideC = getLength(triangle.x2, triangle.y2, triangle.x3, triangle.y3);
-
-        return getMax(thisSideA, thisSideB, thisSideC) == getMax(otherSideA, otherSideB, otherSideC) &&
-                getMiddle(thisSideA, thisSideB, thisSideC) == getMiddle(otherSideA, otherSideB, otherSideC) &&
-                getMin(thisSideA, thisSideB, thisSideC) == getMin(otherSideA, otherSideB, otherSideC);
+        return x1 == triangle.x1 && y1 == triangle.y1 && x2 == triangle.x2 && y2 == triangle.y2 &&
+                x3 == triangle.x3 && y3 == triangle.y3;
     }
 }

@@ -1,42 +1,44 @@
-package ru.academits.khanov.shape;
+package ru.academits.khanov.shape.shapes;
 
-public class Square implements Shape {
-    private final double length;
+import ru.academits.khanov.shape.Shape;
 
-    public Square(double length) {
-        this.length = length;
+public class Circle implements Shape {
+    private final double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
     }
 
     @Override
     public String toString() {
-        return "Квадрат {" + length + "}";
+        return "Окружность {" + radius + "}";
     }
 
     @Override
     public double getWidth() {
-        return length;
+        return 2 * radius;
     }
 
     @Override
     public double getHeight() {
-        return length;
+        return 2 * radius;
     }
 
     @Override
     public double getArea() {
-        return length * length;
+        return Math.PI * Math.pow(radius, 2);
     }
 
     @Override
     public double getPerimeter() {
-        return 4 * length;
+        return 2 * Math.PI * radius;
     }
 
     @Override
     public int hashCode() {
         final int prime = 41;
         int hash = 1;
-        hash = prime * hash + Double.hashCode(length);
+        hash = prime * hash + Double.hashCode(radius);
         return hash;
     }
 
@@ -50,8 +52,8 @@ public class Square implements Shape {
             return false;
         }
 
-        Square square = (Square) obj;
+        Circle circle = (Circle) obj;
 
-        return length == square.length;
+        return radius == circle.radius;
     }
 }

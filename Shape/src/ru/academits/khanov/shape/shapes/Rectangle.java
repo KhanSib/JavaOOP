@@ -1,4 +1,6 @@
-package ru.academits.khanov.shape;
+package ru.academits.khanov.shape.shapes;
+
+import ru.academits.khanov.shape.Shape;
 
 public class Rectangle implements Shape {
     private final double width;
