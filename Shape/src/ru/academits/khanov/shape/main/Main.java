@@ -1,6 +1,8 @@
-package ru.academits.khanov.main;
+package ru.academits.khanov.shape.main;
 
-import ru.academits.khanov.shape.*;
+import ru.academits.khanov.shape.Shape;
+import ru.academits.khanov.shape.shapes.*;
+
 import java.util.Arrays;
 
 public class Main {
