@@ -1,4 +1,4 @@
-package ru.academits.khanov.main;
+package ru.academits.khanov.matrix.main;
 
 import ru.academits.khanov.matrix.Matrix;
 
