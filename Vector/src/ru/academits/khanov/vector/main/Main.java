@@ -19,7 +19,7 @@ public class Main {
         System.out.println("Вектор 3 - Вектор 1 (not static) " + vector3.subtract(vector1));
         System.out.println("Вектор 3: " + vector3);
 
-        System.out.println("Умножение вектора 3 на скаляр " + vector3.numberMultiplication(10.1111));
+        System.out.println("Умножение вектора 3 на скаляр " + vector3.increaseByScalar(10.1111));
 
         System.out.println("Вектор 3 разворот: " + vector3.turn());
 
