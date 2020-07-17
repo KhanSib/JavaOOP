@@ -207,4 +207,90 @@ public class Matrix {
 
         return this;
     }
+
+    public double getDeterminant() {
+        if (vectors.length != vectors[0].getSize()) {
+            throw new IndexOutOfBoundsException("Матрица должна быть квадратной");
+        }
+
+        int matrixSize = vectors.length;
+        double epsilon = 1.0e-10;
+        double[][] triangularMatrix = new double[matrixSize][matrixSize];
+
+        for (int line = 0; line < matrixSize; line++) {
+            for (int column = 0; column < matrixSize; column++) {
+                triangularMatrix[line][column] = vectors[line].getComponent(column);
+            }
+        }
+
+        for (int i = 0; i < matrixSize - 1; i++) {
+            for (int j = i + 1; j < matrixSize; j++) {
+                if (Math.abs(triangularMatrix[i][i]) < epsilon) {
+                    continue;
+                }
+
+                double reductionCoefficient = triangularMatrix[i][j] / triangularMatrix[i][i];
+
+                for (int k = i; k < matrixSize; k++) {
+                    triangularMatrix[k][j] -= reductionCoefficient * triangularMatrix[k][i];
+                }
+            }
+        }
+
+        double determinant = 1;
+
+        for (int i = 0; i < matrixSize; i++) {
+            determinant *= triangularMatrix[i][i];
+        }
+
+        return determinant;
+    }
+
+    public static Matrix sum(Matrix matrix1, Matrix matrix2) {
+        if (matrix1 == null) {
+            throw new IllegalArgumentException("Первый аргумент null, матрица не может быть null");
+        }
+
+        if (matrix2 == null) {
+            throw new IllegalArgumentException("Второй аргумент null, матрица не может быть null");
+        }
+
+        Matrix tempMatrix1 = new Matrix(matrix1);
+
+        return new Matrix(tempMatrix1.add(matrix2));
+    }
+
+    public static Matrix subtract(Matrix matrix1, Matrix matrix2) {
+        if (matrix1 == null) {
+            throw new IllegalArgumentException("Первый аргумент null, матрица не может быть null");
+        }
+
+        if (matrix2 == null) {
+            throw new IllegalArgumentException("Второй аргумент null, матрица не может быть null");
+        }
+
+        Matrix tempMatrix1 = new Matrix(matrix1);
+
+        return new Matrix(tempMatrix1.subtract(matrix2));
+    }
+
+    public static Matrix getMultiplication(Matrix matrix1, Matrix matrix2) {
+        if (matrix1 == null) {
+            throw new IllegalArgumentException("Первый аргумент null, матрица не может быть null");
+        }
+
+        if (matrix2 == null) {
+            throw new IllegalArgumentException("Второй аргумент null, матрица не может быть null");
+        }
+
+        Matrix tempMatrix = new Matrix(matrix2.getSize()[0],matrix1.getSize()[1]);
+
+        for (int line=0;line<matrix1.getSize()[1];line++){
+            for (int column=0;column<matrix2.getSize()[0];column++) {
+                tempMatrix.vectors[line].setComponent(column,Vector.getMultiplication(matrix1.vectors[line],matrix2.getColumnVector(column)));
+            }
+        }
+
+        return tempMatrix;
+    }
 }
