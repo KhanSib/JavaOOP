@@ -2,8 +2,6 @@ package ru.academits.khanov.matrix;
 
 import ru.academits.khanov.vector.Vector;
 
-import java.util.Arrays;
-
 
 public class Matrix {
     private final Vector[] vectors;
@@ -62,7 +60,19 @@ public class Matrix {
 
     @Override
     public String toString() {
-        return Arrays.toString(vectors).replace('[', '{').replace(']', '}');
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append('{');
+
+        for (int i = 0; i < vectors.length - 1; i++) {
+            stringBuilder.append(vectors[i]);
+            stringBuilder.append(", ");
+        }
+
+        stringBuilder.append(vectors[vectors.length - 1]);
+        stringBuilder.append('}');
+
+        return stringBuilder.toString();
     }
 
     public int[] getSize() {
@@ -124,11 +134,75 @@ public class Matrix {
         return matrix;
     }
 
-    public Matrix increaseByScalar(double scalar){
+    public Matrix increaseByScalar(double scalar) {
         for (Vector vector : vectors) {
             for (int line = 0; line < vectors[0].getSize(); line++) {
                 vector.setComponent(line, vector.getComponent(line) * scalar);
             }
+        }
+
+        return this;
+    }
+
+    public Vector multiplyByVector(Vector vector) {
+        if (vector == null) {
+            throw new IndexOutOfBoundsException("Вектор не может быть null");
+        }
+
+        if (vector.getSize() > vectors[0].getSize()) {
+            throw new IndexOutOfBoundsException("Длина вектора выходит за пределы размера строки матрицы");
+        }
+
+        Vector outVector = new Vector(vectors[0].getSize());
+        Vector inVector = new Vector(vectors[0].getSize());
+
+        for (int i = 0; i < vector.getSize(); i++) {
+            inVector.setComponent(i, vector.getComponent(i));
+        }
+
+
+        for (int i = 0; i < vectors.length; i++) {
+            outVector.setComponent(i, Vector.getMultiplication(inVector, this.vectors[i]));
+        }
+
+        return outVector;
+    }
+
+    public Matrix add(Matrix matrix) {
+        if (matrix == null) {
+            throw new IndexOutOfBoundsException("Аргумент не может быть null");
+        }
+
+        if (vectors.length < matrix.vectors.length) {
+            throw new IndexOutOfBoundsException("Кол-во строк матрицы аргумента превышает кол-во строк матрицы");
+        }
+
+        if (vectors[0].getSize() < matrix.vectors[0].getSize()) {
+            throw new IndexOutOfBoundsException("Кол-во столбцов матрицы аргумента превышает кол-во столбцов матрицы");
+        }
+
+        for (int i = 0; i < matrix.vectors.length; i++) {
+            vectors[i].add(matrix.vectors[i]);
+        }
+
+        return this;
+    }
+
+    public Matrix subtract(Matrix matrix) {
+        if (matrix == null) {
+            throw new IndexOutOfBoundsException("Аргумент не может быть null");
+        }
+
+        if (vectors.length < matrix.vectors.length) {
+            throw new IndexOutOfBoundsException("Кол-во строк матрицы аргумента превышает кол-во строк матрицы");
+        }
+
+        if (vectors[0].getSize() < matrix.vectors[0].getSize()) {
+            throw new IndexOutOfBoundsException("Кол-во столбцов матрицы аргумента превышает кол-во столбцов матрицы");
+        }
+
+        for (int i = 0; i < matrix.vectors.length; i++) {
+            vectors[i].subtract(matrix.vectors[i]);
         }
 
         return this;
