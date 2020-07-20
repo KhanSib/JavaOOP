@@ -11,7 +11,7 @@ public class ConvertCsvToHtml {
              PrintWriter writer = new PrintWriter("output.html")) {
 
             boolean isTableRowOpen = false;
-            boolean isTableDetailOpen = false; 
+            boolean isTableDetailOpen = false;
             boolean isTableDetailShielded = false;
             int doubleQuotesCount = 0;
 
