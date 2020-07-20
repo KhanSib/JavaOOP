@@ -15,7 +15,7 @@ public class ConvertCsvToHtml {
             boolean isTableDetailShielded = false;
             int doubleQuotesCount = 0;
 
-            writer.println("<!DOCTYPE html>");
+            writer.println("<!DOCTYPE html>"); 
             writer.println("<html>");
             writer.println("<head>");
             writer.println("<title>!DOCTYPE</title>");
