@@ -11,7 +11,7 @@ public class Main {
         System.out.println("Вектор 2: " + vector2);
 
         Vector vector3 = new Vector(6, new double[]{1, 2, 3, 4, 5});
-        System.out.println("Вектор 3: " + vector3);
+        System.out.println("Вектор 3: " + vector3); 
 
         System.out.println("Вектор 3 + Вектор 1 (not static) " + vector3.add(vector1));
         System.out.println("Вектор 3: " + vector3);

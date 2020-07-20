@@ -1,6 +1,6 @@
-package ru.academits.khanov.shape.shapes;
+package ru.academits.khanov.shape.main;
 
-import ru.academits.khanov.shape.Shape;
+import ru.academits.khanov.shape.shapes.Shape;
 
 import java.util.Comparator;
 

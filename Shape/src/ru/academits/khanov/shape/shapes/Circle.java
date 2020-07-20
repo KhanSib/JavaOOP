@@ -1,7 +1,5 @@
 package ru.academits.khanov.shape.shapes;
 
-import ru.academits.khanov.shape.Shape;
-
 public class Circle implements Shape {
     private final double radius;
 

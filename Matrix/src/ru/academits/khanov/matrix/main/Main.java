@@ -18,7 +18,7 @@ public class Main {
         Vector[] vectors = {new Vector(new double[]{1, 2, 3}), new Vector(new double[]{3, 4, 5, 6, 7})};
         Matrix matrix4 = new Matrix(vectors);
 
-        System.out.println("Матрица 4: " + matrix4); 
+        System.out.println("Матрица 4: " + matrix4);
 
         System.out.println("Размерность матрицы 4: " + Arrays.toString(matrix4.getSize()));
 

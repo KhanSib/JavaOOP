@@ -1,13 +1,13 @@
 package ru.academits.khanov.shape.main;
 
-import ru.academits.khanov.shape.Shape;
+import ru.academits.khanov.shape.shapes.Shape;
 import ru.academits.khanov.shape.shapes.*;
 
 import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        Shape[] shapes = new Shape[]{
+        Shape[] shapes = {
                 new Square(5),
                 new Square(2),
                 new Triangle(1, 5, 2, 1, -1, 1),
