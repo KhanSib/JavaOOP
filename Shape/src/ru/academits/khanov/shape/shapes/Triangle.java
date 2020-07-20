@@ -1,7 +1,5 @@
 package ru.academits.khanov.shape.shapes;
 
-import ru.academits.khanov.shape.Shape;
-
 public class Triangle implements Shape {
     private final double x1;
     private final double y1;
@@ -40,18 +38,6 @@ public class Triangle implements Shape {
         return Math.min(b, c);
     }
 
-    private static double getMiddle(double a, double b, double c) {
-        if (a <= b && b <= c) {
-            return b;
-        }
-
-        if (b <= a && a <= c) {
-            return a;
-        }
-
-        return c;
-    }
-
     private static double getLength(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
@@ -68,9 +54,9 @@ public class Triangle implements Shape {
 
     @Override
     public double getArea() {
-        double perimeter = getPerimeter();
-        return Math.sqrt(perimeter / 2 * (perimeter / 2 - getLength(x1, y1, x2, y2))
-                * (perimeter / 2 - getLength(x1, y1, x3, y3)) * (perimeter / 2 - getLength(x2, y2, x3, y3)));
+        double halfPerimeter = getPerimeter() / 2;
+        return Math.sqrt(halfPerimeter * (halfPerimeter - getLength(x1, y1, x2, y2))
+                * (halfPerimeter - getLength(x1, y1, x3, y3)) * (halfPerimeter - getLength(x2, y2, x3, y3)));
     }
 
     @Override
