@@ -97,10 +97,7 @@ public class Vector {
         }
 
         if (elements.length < vector.elements.length) {
-            double[] tempElements = elements;
-            elements = new double[vector.elements.length];
-
-            System.arraycopy(tempElements, 0, elements, 0, tempElements.length);
+            elements = Arrays.copyOf(elements, vector.elements.length);
         }
 
         for (int i = 0; i < vector.elements.length; i++) {
@@ -116,10 +113,7 @@ public class Vector {
         }
 
         if (elements.length < vector.elements.length) {
-            double[] tempElements = elements;
-            elements = new double[vector.elements.length];
-
-            System.arraycopy(tempElements, 0, elements, 0, tempElements.length);
+            elements = Arrays.copyOf(elements, vector.elements.length);
         }
 
         for (int i = 0; i < vector.elements.length; i++) {
