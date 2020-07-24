@@ -10,7 +10,7 @@ public class ArrayList<T> implements List<T> {
         this.items = Arrays.copyOf(items, items.length);
         length = items.length;
     }
- 
+
     @Override
     public int size() {
         return length;
