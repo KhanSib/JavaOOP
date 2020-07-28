@@ -7,7 +7,7 @@ public class Vector {
 
     public Vector(int dimension) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException("Размерность вектора не может быть отрицательной");
+            throw new IllegalArgumentException("Размерность вектора не может быть нилевой или отрицательной");
         }
 
         elements = new double[dimension];
@@ -18,33 +18,35 @@ public class Vector {
             throw new IllegalArgumentException("Вектор не может быть null");
         }
 
-        elements = new double[vector.elements.length];
-
-        System.arraycopy(vector.elements, 0, elements, 0, vector.elements.length);
+        elements = Arrays.copyOf(vector.elements, vector.elements.length);
     }
 
     public Vector(double[] array) {
-        if (array == null || array.length == 0) {
-            throw new IllegalArgumentException("Массив не может быть null или пустым");
+        if (array == null) {
+            throw new IllegalArgumentException("Массив не может быть null");
         }
 
-        elements = new double[array.length];
+        if (array.length == 0) {
+            throw new IllegalArgumentException("Массив не может быть пустым");
+        }
 
-        System.arraycopy(array, 0, elements, 0, array.length);
+        elements = Arrays.copyOf(array, array.length);
     }
 
     public Vector(int dimension, double[] array) {
-        if (dimension < 1) {
+        if (dimension <= 0) {
             throw new IllegalArgumentException("Размерность вектора не может быть отрицательной или нулевой");
         }
 
-        if (array == null || array.length == 0) {
-            throw new IllegalArgumentException("Массив не может быть null или пустым");
+        if (array == null) {
+            throw new IllegalArgumentException("Массив не может быть null");
         }
 
-        elements = new double[dimension];
+        if (dimension < array.length) {
+            throw new IllegalArgumentException("Заданная размерность меньше размерности передаваемого массива");
+        }
 
-        System.arraycopy(array, 0, elements, 0, array.length);
+        elements = Arrays.copyOf(array, dimension);
     }
 
     @Override
@@ -172,16 +174,9 @@ public class Vector {
             throw new IllegalArgumentException("Второй аргумент null, вектор не может быть null");
         }
 
-        Vector vector = new Vector(Math.max(vector1.elements.length, vector2.elements.length));
+        Vector vector = new Vector(vector1);
 
-        System.arraycopy(vector1.elements, 0, vector.elements, 0, vector1.elements.length);
-
-        for (int i = 0; i < vector2.elements.length; i++) {
-            vector.elements[i] += vector2.elements[i];
-
-        }
-
-        return vector;
+        return vector.add(vector2);
     }
 
     public static Vector subtract(Vector vector1, Vector vector2) {
@@ -193,16 +188,9 @@ public class Vector {
             throw new IllegalArgumentException("Второй аргумент null, вектор не может быть null");
         }
 
-        Vector vector = new Vector(Math.max(vector1.elements.length, vector2.elements.length));
+        Vector vector = new Vector(vector1);
 
-        System.arraycopy(vector1.elements, 0, vector.elements, 0, vector1.elements.length);
-
-        for (int i = 0; i < vector2.elements.length; i++) {
-            vector.elements[i] -= vector2.elements[i];
-
-        }
-
-        return vector;
+        return vector.subtract(vector2);
     }
 
     public static double getVectorsProduct(Vector vector1, Vector vector2) {
