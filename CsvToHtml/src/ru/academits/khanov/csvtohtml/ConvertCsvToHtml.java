@@ -6,8 +6,8 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class ConvertCsvToHtml {
-    public static void main(String[] args) throws FileNotFoundException {
-        try (Scanner scanner = new Scanner(new FileInputStream(args[0]));
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(new FileInputStream("input.csv"));//new FileInputStream(args[0]));
              PrintWriter writer = new PrintWriter("output.html")) {
 
             boolean isTableRowOpen = false;
@@ -15,7 +15,8 @@ public class ConvertCsvToHtml {
             boolean isTableDetailShielded = false;
             int doubleQuotesCount = 0;
 
-            writer.println("<!DOCTYPE html>");
+            writer.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"" +
+                    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
             writer.println("<html>");
             writer.println("<head>");
             writer.println("<title>!DOCTYPE</title>");
@@ -157,6 +158,8 @@ public class ConvertCsvToHtml {
             writer.println("</table>");
             writer.println("</body>");
             writer.println("</html>");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

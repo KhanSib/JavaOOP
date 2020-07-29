@@ -12,12 +12,7 @@ public class ArrayList<T> implements List<T> {
     }
 
     public ArrayList(int capacity) {
-        elements = (T[]) (new Object[capacity]);
-    }
-
-    public ArrayList(T[] items, int capacity) {
-        elements = Arrays.copyOf(items, capacity);
-        length = items.length;
+        elements = (T[]) new Object[capacity];
     }
 
     @Override
