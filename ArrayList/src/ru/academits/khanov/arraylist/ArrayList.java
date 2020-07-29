@@ -7,16 +7,16 @@ public class ArrayList<T> implements List<T> {
     private int length;
 
     public ArrayList(T[] items) {
-        this.elements = Arrays.copyOf(items, items.length);
+        elements = Arrays.copyOf(items, items.length);
         length = items.length;
     }
 
     public ArrayList(int capacity) {
-        elements = new T[capacity];
+        elements = (T[]) (new Object[capacity]);
     }
 
     public ArrayList(T[] items, int capacity) {
-        this.elements = Arrays.copyOf(items, capacity);
+        elements = Arrays.copyOf(items, capacity);
         length = items.length;
     }
 
@@ -60,7 +60,7 @@ public class ArrayList<T> implements List<T> {
             return false;
         }
 
-        for (T item : elements) {
+        for (Object item : elements) {
             if (item.equals(o)) {
                 return true;
             }
@@ -80,7 +80,7 @@ public class ArrayList<T> implements List<T> {
         @Override
         public T next() {
             currentIndex++;
-            return elements[currentIndex];
+            return (T) elements[currentIndex];
         }
     }
 

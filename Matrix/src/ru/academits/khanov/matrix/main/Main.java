@@ -3,8 +3,6 @@ package ru.academits.khanov.matrix.main;
 import ru.academits.khanov.matrix.Matrix;
 import ru.academits.khanov.vector.Vector;
 
-import java.util.Arrays;
-
 public class Main {
     public static void main(String[] args) {
         Matrix matrix1 = new Matrix(10, 2);
@@ -20,24 +18,25 @@ public class Main {
 
         System.out.println("Матрица 4: " + matrix4);
 
-        System.out.println("Размерность матрицы 4: " + Arrays.toString(matrix4.getSize()));
+        System.out.println("Кол-во столбцов матрицы 4: " + matrix4.getColumnSize());
+        System.out.println("Кол-во строк матрицы 4: " + matrix4.getRowSize());
 
-        Vector vector1 = new Vector(matrix4.getLineVector(1));
+        Vector vector1 = new Vector(matrix4.getRow(1));
 
-        System.out.println("Вторая строка матрицы 4: " + matrix4.getLineVector(1));
+        System.out.println("Вторая строка матрицы 4: " + matrix4.getRow(1));
 
-        Vector vector2 = new Vector(new double[]{1, 2});
-        matrix4.setLineVector(0, vector2);
+        Vector vector2 = new Vector(new double[]{1, 2, 0, 0, 0});
+        matrix4.setRow(0, vector2);
 
         System.out.println("Матрица 4: " + matrix4);
 
-        System.out.println("Второй столбец матрицы 4: " + matrix4.getColumnVector(1));
+        System.out.println("Второй столбец матрицы 4: " + matrix4.getColumn(1));
 
         System.out.println("Транспонирование матрицы 4: " + matrix4.getTransposeMatrix());
 
-        System.out.println("Умножение на скаляр 4 матрицы 4: " + matrix4.increaseByScalar(4));
+        System.out.println("Умножение на скаляр 4 матрицы 4: " + matrix4.multiplyByScalar(4));
 
-        System.out.println("Умножение матрицы 4 на вектор {1, 2, 3, 4}: " + matrix4.multiplyByVector(new Vector(new double[]{1, 2, 3, 4})));
+        System.out.println("Умножение матрицы 4 на вектор {1, 2}: " + matrix4.multiplyByVector(new Vector(new double[]{1, 2})));
 
         Matrix matrix5 = new Matrix(new double[][]{{1, 2, 3}, {1, 3}, {1, 2, 3, 4, 5}, {1}});
         Matrix matrix6 = new Matrix(new double[][]{{1, 2, 3}, {1, 3}});
