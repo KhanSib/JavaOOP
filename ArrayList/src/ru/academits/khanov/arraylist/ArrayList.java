@@ -3,12 +3,45 @@ package ru.academits.khanov.arraylist;
 import java.util.*;
 
 public class ArrayList<T> implements List<T> {
-    private T[] items;
+    private T[] elements;
     private int length;
 
     public ArrayList(T[] items) {
-        this.items = Arrays.copyOf(items, items.length);
+        this.elements = Arrays.copyOf(items, items.length);
         length = items.length;
+    }
+
+    public ArrayList(int capacity) {
+        elements = new T[capacity];
+    }
+
+    public ArrayList(T[] items, int capacity) {
+        this.elements = Arrays.copyOf(items, capacity);
+        length = items.length;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("{");
+
+        for (int i = 0; i < length - 1; i++) {
+            stringBuilder.append(elements[i]);
+            stringBuilder.append(", ");
+        }
+
+        if (length > 0) {
+            stringBuilder.append(elements[length - 1]);
+        }
+
+        stringBuilder.append("}");
+
+        return stringBuilder.toString();
+    }
+
+    private void increaseCapacity() {
+        elements = Arrays.copyOf(elements, elements.length * 2);
     }
 
     @Override
@@ -27,7 +60,7 @@ public class ArrayList<T> implements List<T> {
             return false;
         }
 
-        for (T item : items) {
+        for (T item : elements) {
             if (item.equals(o)) {
                 return true;
             }
@@ -47,7 +80,7 @@ public class ArrayList<T> implements List<T> {
         @Override
         public T next() {
             currentIndex++;
-            return items[currentIndex];
+            return elements[currentIndex];
         }
     }
 
@@ -58,17 +91,26 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public Object[] toArray() {
-        return items;
+        return elements;
     }
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
-        return null;
+        System.arraycopy(elements, 0, a, 0, length);
+
+        return a;
     }
 
     @Override
     public boolean add(T t) {
-        return false;
+        if (length >= elements.length) {
+            increaseCapacity();
+        }
+
+        elements[length] = t;
+        length++;
+
+        return true;
     }
 
     @Override
@@ -103,17 +145,30 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void clear() {
+        for (int i = 0; i < length; i++) {
+            elements[i] = null;
+        }
 
+        length = 0;
     }
 
     @Override
     public T get(int index) {
-        return null;
+        if (index >= length && index < 0) {
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+        }
+        return elements[index];
     }
 
     @Override
     public T set(int index, T element) {
-        return null;
+        if (index >= length) {
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+        }
+
+        elements[index] = element;
+
+        return element;
     }
 
     @Override
@@ -123,7 +178,15 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public T remove(int index) {
-        return null;
+        if (index >= length && index < 0) {
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+        }
+
+        T removedElement = elements[index];
+
+        System.arraycopy(elements, index + 1, elements, index, length - 1);
+
+        return removedElement;
     }
 
     @Override

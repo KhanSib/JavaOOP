@@ -162,7 +162,7 @@ public class Matrix {
 
 
         for (int i = 0; i < vectors.length; i++) {
-            outVector.setComponent(i, Vector.getMultiplication(inVector, this.vectors[i]));
+            outVector.setComponent(i, Vector.getVectorsProduct(inVector, this.vectors[i]));
         }
 
         return outVector;
@@ -287,7 +287,7 @@ public class Matrix {
 
         for (int line=0;line<matrix1.getSize()[1];line++){
             for (int column=0;column<matrix2.getSize()[0];column++) {
-                tempMatrix.vectors[line].setComponent(column,Vector.getMultiplication(matrix1.vectors[line],matrix2.getColumnVector(column)));
+                tempMatrix.vectors[line].setComponent(column,Vector.getVectorsProduct(matrix1.vectors[line],matrix2.getColumnVector(column)));
             }
         }
 
