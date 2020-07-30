@@ -7,11 +7,19 @@ public class ArrayList<T> implements List<T> {
     private int length;
 
     public ArrayList(T[] items) {
+        if (items == null) {
+            throw new NullPointerException("Массив не может быть null");
+        }
+
         elements = Arrays.copyOf(items, items.length);
         length = items.length;
     }
 
     public ArrayList(int capacity) {
+        if (capacity <= 0) {
+            throw new IndexOutOfBoundsException("Вместимость массива не может быть нулевой или отрицательной");
+        }
+
         elements = (T[]) new Object[capacity];
     }
 
@@ -55,8 +63,8 @@ public class ArrayList<T> implements List<T> {
             return false;
         }
 
-        for (Object item : elements) {
-            if (item.equals(o)) {
+        for (Object object : elements) {
+            if (object.equals(o)) {
                 return true;
             }
         }
@@ -75,7 +83,7 @@ public class ArrayList<T> implements List<T> {
         @Override
         public T next() {
             currentIndex++;
-            return (T) elements[currentIndex];
+            return elements[currentIndex];
         }
     }
 
@@ -86,11 +94,19 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public Object[] toArray() {
-        return elements;
+        return Arrays.copyOf(elements, length);
     }
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
+        if (a == null) {
+            throw new NullPointerException("Массив не может быть null");
+        }
+
+        if (a.length < length) {
+            a = Arrays.copyOf(a, length);
+        }
+
         System.arraycopy(elements, 0, a, 0, length);
 
         return a;
@@ -98,6 +114,10 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean add(T t) {
+        if (t == null) {
+            throw new NullPointerException("Элемент для вставки не может быть null");
+        }
+
         if (length >= elements.length) {
             increaseCapacity();
         }
@@ -110,38 +130,120 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean remove(Object o) {
+        if (o == null) {
+            throw new NullPointerException("Объект не может быть null");
+        }
+
+        for (int i = 0; i < length; i++) {
+            if (elements[i].equals(o)) {
+                System.arraycopy(elements, i + 1, elements, i, length - i - 1);
+                length--;
+
+                return true;
+            }
+        }
+
         return false;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
+        if (c == null) {
+            throw new NullPointerException("Коллекция не может быть null");
+        }
+
+        for (Object object : c) {
+            if (!contains(object)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        return false;
+        if (c == null) {
+            throw new NullPointerException("Коллекция не может быть null");
+        }
+
+        for (Object object : c) {
+            add((T) object);
+        }
+
+        return true;
     }
+
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
-        return false;
+        if (index >= length && index < 0) {
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+        }
+
+        if (c == null) {
+            throw new NullPointerException("Коллекция не может быть null");
+        }
+
+        while (elements.length - length < c.size()) {
+            increaseCapacity();
+        }
+
+        int collectionSize = c.size();
+        Object[] collectionArray = c.toArray();
+
+        length += collectionSize;
+
+        System.arraycopy(elements, index,
+                elements, index + collectionSize, length - index - collectionSize);
+
+        System.arraycopy(collectionArray, 0, elements, index, index + collectionSize - 2);
+
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
+        if (c == null) {
+            throw new NullPointerException("Коллекция не может быть null");
+        }
+
+        for (Object object : c) {
+            remove(object);
+        }
+
         return false;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return false;
+        if (c == null) {
+            throw new NullPointerException("Коллекция не может быть null");
+        }
+
+        for (int i = 0; i < length; i++) {
+            boolean needRemove = true;
+
+            for (Object object : c) {
+                if (elements[i].equals(object)) {
+                    needRemove = false;
+                    break;
+                }
+            }
+
+            if (needRemove) {
+                remove(i);
+                i--;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public void clear() {
-        for (int i = 0; i < length; i++) {
-            elements[i] = null;
+        for (T element : elements) {
+            element = null;
         }
 
         length = 0;
@@ -152,13 +254,18 @@ public class ArrayList<T> implements List<T> {
         if (index >= length && index < 0) {
             throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
         }
+
         return elements[index];
     }
 
     @Override
     public T set(int index, T element) {
-        if (index >= length) {
+        if (index >= length || index < 0) {
             throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+        }
+
+        if (element == null) {
+            throw new NullPointerException("Элемент для вставки не может быть null");
         }
 
         elements[index] = element;
@@ -168,7 +275,22 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void add(int index, T element) {
+        if (index >= length || index < 0) {
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+        }
 
+        if (element == null) {
+            throw new NullPointerException("Элемент для добавления не может быть null");
+        }
+
+        if (length == elements.length) {
+            increaseCapacity();
+        }
+
+        System.arraycopy(elements, index, elements, index + 1, length - index);
+        elements[index] = element;
+
+        length++;
     }
 
     @Override
@@ -179,19 +301,41 @@ public class ArrayList<T> implements List<T> {
 
         T removedElement = elements[index];
 
-        System.arraycopy(elements, index + 1, elements, index, length - 1);
+        System.arraycopy(elements, index + 1, elements, index, length - index - 1);
 
+        elements[length - 1] = null;
+        length--;
         return removedElement;
     }
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        if (o == null) {
+            throw new NullPointerException("Объект не может быть null");
+        }
+
+        for (int i = 0; i < length; i++) {
+            if (elements[i].equals(o)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        if (o == null) {
+            throw new NullPointerException("Объект не может быть null");
+        }
+
+        for (int i = length - 1; i > 0; i--) {
+            if (elements[i].equals(o)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     @Override
@@ -207,5 +351,21 @@ public class ArrayList<T> implements List<T> {
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         return null;
+    }
+
+    public void ensureCapacity(int capacity) {
+        if (capacity <= 0) {
+            throw new IndexOutOfBoundsException("Вместимость не может быть нулевой или отрицательной");
+        }
+
+        if (capacity <= elements.length) {
+            throw new IndexOutOfBoundsException("Вместимость должна быть больше начальной");
+        }
+
+        elements = Arrays.copyOf(elements, capacity);
+    }
+
+    public void trimToSize() {
+        elements = Arrays.copyOf(elements, length);
     }
 }
