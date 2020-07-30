@@ -32,6 +32,7 @@ public class ListItem<T> {
         this.next = next;
     }
 
+    @Override
     public String toString() {
         return "{" + data + "}";
     }
