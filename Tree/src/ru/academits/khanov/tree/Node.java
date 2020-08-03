@@ -6,7 +6,7 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
     private T value;
 
     public Node(T value) {
-        if (value == null) { 
+        if (value == null) {
             throw new NullPointerException("Значение не может быть null");
         }
 
