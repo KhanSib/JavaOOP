@@ -1,9 +1,12 @@
 package ru.academits.khanov.tree;
 
-public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
+public class Node<T> {
     private Node<T> left;
     private Node<T> right;
     private T value;
+
+    public Node() {
+    }
 
     public Node(T value) {
         if (value == null) {
@@ -50,10 +53,5 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
     @Override
     public String toString() {
         return "{" + value + "}";
-    }
-
-    @Override
-    public int compareTo(Node<T> node) {
-        return value.compareTo(node.getValue());
     }
 }

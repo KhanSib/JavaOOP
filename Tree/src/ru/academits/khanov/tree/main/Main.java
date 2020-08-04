@@ -8,12 +8,18 @@ public class Main {
 
         binaryTree.add(8);
         binaryTree.add(3);
-        binaryTree.add(10);
+        binaryTree.add(12);
         binaryTree.add(1);
         binaryTree.add(6);
         binaryTree.add(14);
         binaryTree.add(4);
         binaryTree.add(7);
         binaryTree.add(13);
+        binaryTree.add(9);
+
+        System.out.println(binaryTree.isContains(13));
+        System.out.println(binaryTree.remove(8));
+
+        binaryTree.add(300);
     }
 }
