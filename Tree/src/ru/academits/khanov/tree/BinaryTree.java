@@ -1,7 +1,16 @@
 package ru.academits.khanov.tree;
 
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.function.Consumer;
+
 public class BinaryTree<T extends Comparable<T>> {
     private Node<T> root;
+
+    public Node<T> getRoot(){
+        return root;
+    }
 
     public void add(T value) {
         if (value == null) {
@@ -164,6 +173,82 @@ public class BinaryTree<T extends Comparable<T>> {
                     return false;
                 }
             }
+        }
+    }
+
+    public int getNodesCount() {
+        if (root == null) {
+            return 0;
+        }
+
+        Stack<Node<T>> stack = new Stack<>();
+
+        stack.push(root);
+        int count = 1;
+
+        while (!stack.empty()) {
+            Node<T> current = stack.pop();
+            count++;
+
+            if (current.getLeft() != null) {
+                stack.push(current.getLeft());
+            }
+
+            if (current.getRight() != null) {
+                stack.push(current.getRight());
+            }
+        }
+
+        return count;
+    }
+
+    public void visitNodesByWidth(Consumer<T> consumer) {
+        Queue<Node<T>> queue = new LinkedList<>();
+
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            Node<T> current = queue.poll();
+            consumer.accept(current.getValue());
+
+            if (current.getLeft() != null) {
+                queue.add(current.getLeft());
+            }
+
+            if (current.getRight() != null) {
+                queue.add(current.getRight());
+            }
+        }
+    }
+
+    public void visitNodesByDepth(Consumer<T> consumer) {
+        Stack<Node<T>> stack = new Stack<>();
+
+        stack.push(root);
+
+        while (!stack.empty()) {
+            Node<T> current = stack.pop();
+            consumer.accept(current.getValue());
+
+            if (current.getRight() != null) {
+                stack.push(current.getRight());
+            }
+
+            if (current.getLeft() != null) {
+                stack.push(current.getLeft());
+            }
+        }
+    }
+
+    public void visitNodesByDepthRecursion(Node<T> node, Consumer<T> consumer) {
+        consumer.accept(node.getValue());
+
+        if (node.getLeft() != null) {
+            visitNodesByDepthRecursion(node.getLeft(), consumer);
+        }
+
+        if (node.getRight() != null) {
+            visitNodesByDepthRecursion(node.getRight(), consumer);
         }
     }
 }

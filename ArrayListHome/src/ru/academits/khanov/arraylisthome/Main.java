@@ -36,7 +36,6 @@ public class Main {
         ArrayList<Integer> list3 = new ArrayList<>(Arrays.asList(4, 2, 1, 2, 3, 4, 5, 4, 2, 1));
         ArrayList<Integer> list4 = new ArrayList<>(list3);
 
-
         for (int i = 0; i < list4.size(); i++) {
             for (int j = list4.size()-1; j > i; j = list4.lastIndexOf(list4.get(i))) {
                 list4.remove(j);
