@@ -2,14 +2,18 @@ package ru.academits.khanov.hashtable;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
 
-public class HashTable<T> implements Collection {
-    List<T>[] lists;
+public class HashTable<T> implements Collection<T> {
+    Object[] linkedLists;
+
+    public HashTable(int size) {
+        linkedLists = new Object[size];
+    }
 
     @Override
     public int size() {
-        return 0;
+        return linkedLists.length;
     }
 
     @Override
@@ -34,7 +38,21 @@ public class HashTable<T> implements Collection {
 
     @Override
     public boolean add(Object o) {
-        return false;
+        if (o == null) {
+            throw new NullPointerException("Элемент для добавления не может быть null");
+        }
+
+        int index = o.hashCode() % size();
+
+        if (linkedLists[index] == null) {
+            linkedLists[index] = new LinkedList<>();
+        }
+
+        LinkedList<T> linkedList = (LinkedList<T>) linkedLists[index];
+
+        linkedList.add((T) o);
+
+        return true;
     }
 
     @Override
