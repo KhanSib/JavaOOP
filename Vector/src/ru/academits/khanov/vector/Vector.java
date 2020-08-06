@@ -22,6 +22,19 @@ public class Vector {
         elements = Arrays.copyOf(vector.elements, vector.elements.length);
     }
 
+    public Vector(int dimension, Vector vector) {
+        if (dimension <= 0) {
+            throw new IllegalArgumentException("Размерность вектора не может быть нилевой или отрицательной." +
+                    System.lineSeparator() + "Размерность = " + dimension);
+        }
+
+        if (vector == null) {
+            throw new IllegalArgumentException("Вектор не может быть null");
+        }
+
+        elements = Arrays.copyOf(vector.elements, dimension);
+    }
+
     public Vector(double[] array) {
         if (array == null) {
             throw new IllegalArgumentException("Массив не может быть null");

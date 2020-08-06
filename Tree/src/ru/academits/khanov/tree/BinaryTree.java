@@ -5,8 +5,25 @@ import java.util.Queue;
 import java.util.Stack;
 import java.util.function.Consumer;
 
-public class BinaryTree<T extends Comparable<T>> {
+public class BinaryTree<T> {
     private Node<T> root;
+    private final Comparable<T> comparable;
+
+    public BinaryTree() {
+        comparable = new ValueComparable<>();
+    }
+
+    public BinaryTree(Comparable<T> comparable) {
+        this.comparable = comparable;
+    }
+
+    private static class ValueComparable<T> implements Comparable<T> {
+        @Override
+        public int compareTo(T o) {
+
+            return 0;
+        }
+    }
 
     public Node<T> getRoot() {
         return root;
@@ -26,6 +43,7 @@ public class BinaryTree<T extends Comparable<T>> {
         Node<T> node = new Node<>(value);
 
         while (true) {
+            current.getRight().comparable.compareTo(current.getValue());
             if (node.getValue().compareTo(current.getValue()) < 0) {
                 if (current.getLeft() != null) {
                     current = current.getLeft();

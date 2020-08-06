@@ -44,4 +44,8 @@ public class Node<T> {
     public String toString() {
         return "{" + value + "}";
     }
+
+    public int compareTo(T value){
+        return 0;
+    }
 }
