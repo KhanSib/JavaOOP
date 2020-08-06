@@ -16,16 +16,6 @@ public class Node<T> {
         this.value = value;
     }
 
-    public Node(T value, Node<T> left, Node<T> right) {
-        if (value == null) {
-            throw new NullPointerException("Значение не может быть null");
-        }
-
-        this.value = value;
-        this.left = left;
-        this.right = right;
-    }
-
     public T getValue() {
         return value;
     }

@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 public class BinaryTree<T extends Comparable<T>> {
     private Node<T> root;
 
-    public Node<T> getRoot(){
+    public Node<T> getRoot() {
         return root;
     }
 

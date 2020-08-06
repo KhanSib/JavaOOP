@@ -9,6 +9,5 @@ public class Main {
         hashTable.add(2);
         hashTable.add(2);
         hashTable.add(2);
-
     }
 }

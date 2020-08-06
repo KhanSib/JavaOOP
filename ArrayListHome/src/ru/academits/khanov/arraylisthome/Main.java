@@ -13,36 +13,32 @@ public class Main {
         try {
             Scanner scanner = new Scanner(new FileInputStream("input.txt"));
 
-            while (scanner.hasNext()) {
+            while (scanner.hasNextLine()) {
                 list1.add(scanner.nextLine());
             }
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Error: отсутствует файл для считывания строк");
         }
 
-        System.out.println("list1: " + list1);
+        System.out.println("Список строк из файла: " + list1);
 
         ArrayList<Integer> list2 = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 
-        for (int i = 0; i < list2.size(); i++) {
-            if (list2.get(i) % 2 == 0) {
-                list2.remove(i);
-            }
-        }
+        list2.removeIf(item -> item % 2 == 0);
 
-        System.out.println("list2: " + list2);
+        System.out.println("Список без четных чисел: " + list2);
 
         ArrayList<Integer> list3 = new ArrayList<>(Arrays.asList(4, 2, 1, 2, 3, 4, 5, 4, 2, 1));
-        ArrayList<Integer> list4 = new ArrayList<>(list3);
+        ArrayList<Integer> list4 = new ArrayList<>();
 
-        for (int i = 0; i < list4.size(); i++) {
-            for (int j = list4.size()-1; j > i; j = list4.lastIndexOf(list4.get(i))) {
-                list4.remove(j);
+        for (Integer integer : list3) {
+            if (!list4.contains(integer)) {
+                list4.add(integer);
             }
         }
 
-        System.out.println("list3: " + list3);
-        System.out.println("list4: " + list4);
+        System.out.println("Список с дубликатами чисел: " + list3);
+        System.out.println("Список без дубликатов: " + list4);
     }
 }

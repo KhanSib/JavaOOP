@@ -5,10 +5,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class HashTable<T> implements Collection<T> {
-    Object[] linkedLists;
+    private LinkedList<T>[] linkedLists;
 
     public HashTable(int size) {
-        linkedLists = new Object[size];
+        LinkedList<Object>[] linkedLists = new LinkedList[size];
+        System.out.println(linkedLists[0].toString());
+        this.linkedLists = (LinkedList<T>[]) linkedLists;
     }
 
     @Override
@@ -37,20 +39,13 @@ public class HashTable<T> implements Collection<T> {
     }
 
     @Override
-    public boolean add(Object o) {
-        if (o == null) {
+    public boolean add(T data) {
+        if (data == null) {
             throw new NullPointerException("Элемент для добавления не может быть null");
         }
 
-        int index = o.hashCode() % size();
-
-        if (linkedLists[index] == null) {
-            linkedLists[index] = new LinkedList<>();
-        }
-
-        LinkedList<T> linkedList = (LinkedList<T>) linkedLists[index];
-
-        linkedList.add((T) o);
+        int index = data.hashCode() % size();
+        linkedLists[index].add(data);
 
         return true;
     }
