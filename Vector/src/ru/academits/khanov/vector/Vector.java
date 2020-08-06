@@ -7,7 +7,8 @@ public class Vector {
 
     public Vector(int dimension) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException("Размерность вектора не может быть нилевой или отрицательной");
+            throw new IllegalArgumentException("Размерность вектора не может быть нилевой или отрицательной." +
+                    System.lineSeparator() + "Размерность = " + dimension);
         }
 
         elements = new double[dimension];
@@ -35,15 +36,12 @@ public class Vector {
 
     public Vector(int dimension, double[] array) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException("Размерность вектора не может быть отрицательной или нулевой");
+            throw new IllegalArgumentException("Размерность вектора не может быть нилевой или отрицательной." +
+                    System.lineSeparator() + "Размерность = " + dimension);
         }
 
         if (array == null) {
             throw new IllegalArgumentException("Массив не может быть null");
-        }
-
-        if (dimension < array.length) {
-            throw new IllegalArgumentException("Заданная размерность меньше размерности передаваемого массива");
         }
 
         elements = Arrays.copyOf(array, dimension);
@@ -149,7 +147,8 @@ public class Vector {
 
     public double getComponent(int index) {
         if (index < 0 || index >= elements.length) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера вектора");
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера вектора" +
+                    System.lineSeparator() + "Индекс = " + index);
         }
 
         return elements[index];
@@ -157,7 +156,8 @@ public class Vector {
 
     public Vector setComponent(int index, double component) {
         if (index < 0 || index >= elements.length) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера вектора");
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера вектора" +
+                    System.lineSeparator() + "Индекс = " + index);
         }
 
         elements[index] = component;
