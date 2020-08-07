@@ -1,5 +1,6 @@
 package ru.academits.khanov.tree;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -7,22 +8,14 @@ import java.util.function.Consumer;
 
 public class BinaryTree<T> {
     private Node<T> root;
-    private final Comparable<T> comparable;
+    private final Comparator<T> comparator;
 
     public BinaryTree() {
-        comparable = new ValueComparable<>();
+        comparator = (Comparator<T>) Comparator.naturalOrder();
     }
 
-    public BinaryTree(Comparable<T> comparable) {
-        this.comparable = comparable;
-    }
-
-    private static class ValueComparable<T> implements Comparable<T> {
-        @Override
-        public int compareTo(T o) {
-
-            return 0;
-        }
+    public BinaryTree(Comparator<T> comparator) {
+        this.comparator = comparator;
     }
 
     public Node<T> getRoot() {
@@ -43,8 +36,7 @@ public class BinaryTree<T> {
         Node<T> node = new Node<>(value);
 
         while (true) {
-            current.getRight().comparable.compareTo(current.getValue());
-            if (node.getValue().compareTo(current.getValue()) < 0) {
+            if (comparator.compare(node.getValue(), current.getValue()) < 0) {
                 if (current.getLeft() != null) {
                     current = current.getLeft();
                 } else {
@@ -75,11 +67,11 @@ public class BinaryTree<T> {
         Node<T> current = root;
 
         while (true) {
-            if (value.compareTo(current.getValue()) == 0) {
+            if (comparator.compare(value, current.getValue()) == 0) {
                 return true;
             }
 
-            if (value.compareTo(current.getValue()) < 0) {
+            if (comparator.compare(value, current.getValue()) < 0) {
                 if (current.getLeft() != null) {
                     current = current.getLeft();
                 } else {
@@ -110,7 +102,7 @@ public class BinaryTree<T> {
         int diraction = 0;
 
         while (true) {
-            if (value.compareTo(current.getValue()) == 0) {
+            if (comparator.compare(value, current.getValue()) == 0) {
                 if (current.getLeft() == null && current.getRight() == null) {
                     if (diraction == -1) {
                         previous.setLeft(null);
@@ -174,7 +166,7 @@ public class BinaryTree<T> {
                 return true;
             }
 
-            if (value.compareTo(current.getValue()) < 0) {
+            if (comparator.compare(value,current.getValue()) < 0) {
                 if (current.getLeft() != null) {
                     previous = current;
                     current = current.getLeft();

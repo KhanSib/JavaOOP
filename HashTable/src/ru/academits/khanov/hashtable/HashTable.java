@@ -9,7 +9,6 @@ public class HashTable<T> implements Collection<T> {
 
     public HashTable(int size) {
         LinkedList<Object>[] linkedLists = new LinkedList[size];
-        System.out.println(linkedLists[0].toString());
         this.linkedLists = (LinkedList<T>[]) linkedLists;
     }
 
@@ -44,7 +43,12 @@ public class HashTable<T> implements Collection<T> {
             throw new NullPointerException("Элемент для добавления не может быть null");
         }
 
-        int index = data.hashCode() % size();
+        int index = Math.abs(data.hashCode() % size());
+
+        if (linkedLists[index] == null) {
+            linkedLists[index] = new LinkedList<>();
+        }
+
         linkedLists[index].add(data);
 
         return true;

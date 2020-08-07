@@ -2,11 +2,13 @@ package ru.academits.khanov.tree.main;
 
 import ru.academits.khanov.tree.BinaryTree;
 
+import java.util.Comparator;
 import java.util.function.Consumer;
 
 public class Main {
     public static void main(String[] args) {
-        BinaryTree<Integer> binaryTree = new BinaryTree<>();
+        //BinaryTree<Integer> binaryTree = new BinaryTree<>();
+        BinaryTree<Integer> binaryTree = new BinaryTree<>(Comparator.comparingInt(Integer::intValue));
 
         binaryTree.add(8);
         binaryTree.add(3);
