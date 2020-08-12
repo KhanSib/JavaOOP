@@ -1,5 +1,6 @@
 package ru.academits.khanov.arraylist;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class ArrayList<T> implements List<T> {
@@ -18,7 +19,8 @@ public class ArrayList<T> implements List<T> {
 
     public ArrayList(int capacity) {
         if (capacity <= 0) {
-            throw new IndexOutOfBoundsException("Вместимость массива не может быть нулевой или отрицательной");
+            throw new IndexOutOfBoundsException("Вместимость массива не может быть нулевой или отрицательной: "
+                    + capacity);
         }
 
         elements = (T[]) new Object[capacity];
@@ -103,7 +105,13 @@ public class ArrayList<T> implements List<T> {
         }
 
         if (a.length < length) {
-            a = Arrays.copyOf(a, length);
+            a = (T1[]) Array.newInstance(a.getClass().getComponentType(), length);
+
+            return a;
+        }
+
+        if (a.length > length) {
+            a[length] = null;
         }
 
         System.arraycopy(elements, 0, a, 0, length);
@@ -113,7 +121,7 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean add(T t) {
-        if (length >= elements.length) {
+        if (length == elements.length) {
             increaseCapacity();
         }
 
@@ -146,61 +154,65 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        for (Object object : c) {
-            add((T) object);
-        }
-
-        return true;
+        return addAll(length, c);
     }
-
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
-        if (index >= length && index < 0) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+        if (index > length && index < 0) {
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка, index :" + index);
         }
 
-        while (elements.length - length < c.size()) {
-            increaseCapacity();
+        if (c == null) {
+            return false;
         }
 
-        int collectionSize = c.size();
-        Object[] collectionArray = c.toArray();
+        if (length + c.size() > elements.length) {
+            ensureCapacity(length + c.size());
+        }
 
-        length += collectionSize;
+        Iterator<? extends T> iterator = c.iterator();
+        int end = index + c.size();
 
-        System.arraycopy(elements, index,
-                elements, index + collectionSize, length - index - collectionSize);
+        if (index < length) {
+            System.arraycopy(elements, index, elements, end, length - index);
+        }
 
-        System.arraycopy(collectionArray, 0, elements, index, index + collectionSize - 2);
+        length += c.size();
+
+        for (; index < end; index++) {
+            elements[index] = iterator.next();
+        }
 
         return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        for (Object object : c) {
-            remove(object);
+        if (c == null) {
+            return false;
         }
 
-        return false;
+        for (Object object : c) {
+            while (contains(object)) {
+                remove(object);
+            }
+        }
+
+        return true;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        for (int i = 0; i < length; i++) {
-            boolean needRemove = true;
+        if (c == null) {
+            throw new NullPointerException("Коллекция не может быть null");
+        }
 
-            for (Object object : c) {
-                if (elements[i].equals(object)) {
-                    needRemove = false;
-                    break;
+        for (T element : elements) {
+            if (!c.contains(element)) {
+                while (contains(element)) {
+                    remove(element);
                 }
-            }
-
-            if (needRemove) {
-                remove(i);
-                i--;
             }
         }
 
@@ -209,17 +221,14 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void clear() {
-        for (T element : elements) {
-            element = null;
-        }
-
+        Arrays.fill(elements, 0, length, null);
         length = 0;
     }
 
     @Override
     public T get(int index) {
         if (index >= length && index < 0) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка, index :" + index);
         }
 
         return elements[index];
@@ -228,18 +237,20 @@ public class ArrayList<T> implements List<T> {
     @Override
     public T set(int index, T element) {
         if (index >= length || index < 0) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка, index :" + index);
         }
+
+        T oldElement = elements[index];
 
         elements[index] = element;
 
-        return element;
+        return oldElement;
     }
 
     @Override
     public void add(int index, T element) {
-        if (index >= length || index < 0) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+        if (index > length || index < 0) {
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка, index :" + index);
         }
 
         if (length == elements.length) {
@@ -255,7 +266,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public T remove(int index) {
         if (index >= length && index < 0) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка");
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка, index :" + index);
         }
 
         T removedElement = elements[index];
@@ -280,7 +291,7 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public int lastIndexOf(Object o) {
-        for (int i = length - 1; i > 0; i--) {
+        for (int i = length - 1; i >= 0; i--) {
             if (elements[i].equals(o)) {
                 return i;
             }
@@ -305,18 +316,14 @@ public class ArrayList<T> implements List<T> {
     }
 
     public void ensureCapacity(int capacity) {
-        if (capacity <= 0) {
-            throw new IndexOutOfBoundsException("Вместимость не может быть нулевой или отрицательной");
+        if (capacity > elements.length) {
+            elements = Arrays.copyOf(elements, capacity);
         }
-
-        if (capacity <= elements.length) {
-            throw new IndexOutOfBoundsException("Вместимость должна быть больше начальной");
-        }
-
-        elements = Arrays.copyOf(elements, capacity);
     }
 
     public void trimToSize() {
-        elements = Arrays.copyOf(elements, length);
+        if (elements.length != length) {
+            elements = Arrays.copyOf(elements, length);
+        }
     }
 }

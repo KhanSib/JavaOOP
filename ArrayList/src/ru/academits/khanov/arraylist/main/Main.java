@@ -6,10 +6,12 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<Integer> list = new ArrayList<>(10);
+        ArrayList<String> list = new ArrayList<>(new String[]{
+                "строка 10", "строка 20", "строка 30", "строка 40", "строка 50"
+        });
 
         ArrayList<String> list1 = new ArrayList<>(new String[]{
-               // "строка 1", "строка 2", "строка 3", "строка 4", "строка 5"
+                "строка 1", "строка 2", "строка 3", "строка 4", "строка 5"
         });
 
         for (String text : list1) {
@@ -22,7 +24,7 @@ public class Main {
         list1.add(1, "строка 2");
         System.out.println("Добавление элемента \"строка 2\" по индексу 1: " + list1);
 
-        list1.addAll(2, list1);
+        list1.addAll(2, list);
         System.out.println("Добавление list1 по индексу 2 в list1: " + list1);
 
         list1.remove(1);
