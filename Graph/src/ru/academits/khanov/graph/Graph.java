@@ -2,6 +2,7 @@ package ru.academits.khanov.graph;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.function.Consumer;
 
 public class Graph {
@@ -40,6 +41,33 @@ public class Graph {
                 for (int i = 0; i < graph.length; i++) {
                     if (graph[current][i] == 1 && current != i && !visited[i]) {
                         queue.add(i);
+                    }
+                }
+            }
+        }
+    }
+
+    public void visitNodesByDepth(Consumer<Integer> consumer) {
+        boolean[] visited = new boolean[graph.length];
+        Stack<Integer> stack = new Stack<>();
+
+        for (int j = 0; j < graph.length; j++) {
+            if (!visited[j]) {
+                stack.push(j);
+            }
+
+            while (!stack.isEmpty()) {
+                int current = stack.pop();
+
+                if (!visited[current]) {
+                    consumer.accept(current);
+
+                    visited[current] = true;
+                }
+
+                for (int i = 0; i < graph.length; i++) {
+                    if (graph[current][i] == 1 && current != i && !visited[i]) {
+                        stack.push(i);
                     }
                 }
             }

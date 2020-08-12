@@ -21,6 +21,11 @@ public class Main {
 
         Consumer<Integer> consumer = integer -> System.out.print(integer + " ");
 
+        System.out.println("Проход в ширину");
         graph.visitNodesByWidth(consumer);
+
+        System.out.println();
+        System.out.println("Проход в глубину");
+        graph.visitNodesByDepth(consumer);
     }
 }
