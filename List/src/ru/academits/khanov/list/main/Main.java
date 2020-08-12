@@ -1,7 +1,7 @@
 package ru.academits.khanov.list.main;
 
-import ru.academits.khanov.list.SinglyLinkedList;
 import ru.academits.khanov.list.ListItem;
+import ru.academits.khanov.list.SinglyLinkedList;
 
 public class Main {
     public static void main(String[] args) {
