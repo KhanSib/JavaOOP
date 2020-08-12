@@ -9,7 +9,7 @@ public class Main {
         ArrayList<Integer> list = new ArrayList<>(10);
 
         ArrayList<String> list1 = new ArrayList<>(new String[]{
-                "строка 1", "строка 2", "строка 3", "строка 4", "строка 5"
+               // "строка 1", "строка 2", "строка 3", "строка 4", "строка 5"
         });
 
         for (String text : list1) {
