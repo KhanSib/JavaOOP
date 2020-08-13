@@ -4,7 +4,7 @@ import ru.academits.khanov.hashtable.HashTable;
 
 import java.util.Collections;
 
-public class Main {
+public class Main { 
     public static void main(String[] args) {
         HashTable<Integer> hashTable = new HashTable<>(10);
 
