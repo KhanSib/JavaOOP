@@ -2,6 +2,7 @@ package ru.academits.khanov.hashtable.main;
 
 import ru.academits.khanov.hashtable.HashTable;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 public class Main {
@@ -17,19 +18,28 @@ public class Main {
         hashTable.add(18);
         hashTable.add(19);
         hashTable.add(null);
-        System.out.println(hashTable);
 
-        //for (Integer integer : hashTable) {
-        //    System.out.println(integer);
-        // }
+        System.out.println("Элементы хэш-таблицы, после вставки: " + hashTable);
 
-        System.out.println(hashTable.remove(2));
-        System.out.println(hashTable);
+        System.out.print("Проверка итератора: ");
 
-        System.out.println(hashTable.removeAll(Collections.singletonList(2)));
-        System.out.println(hashTable);
-        System.out.println(hashTable.size());
+        for (Integer integer : hashTable) {
+            System.out.print(integer + " ");
+        }
+
+        System.out.println();
+
+        System.out.println("Удаление 2ки: " + hashTable.remove(2));
+        System.out.println("Элементы хэш-таблицы, после удаления 2ки: " + hashTable);
+
+        System.out.println("Удаление одиночной коллекции (2): " + hashTable.removeAll(Collections.singletonList(2)));
+        System.out.println("Элементы хэш-таблицы, после удаления одиночной коллекции (2): " + hashTable);
+
+        System.out.println("Размер хэш-таблицы: " + hashTable.size());
+
+        System.out.println("Массив элементов хэш-таблицы: " + Arrays.toString(hashTable.toArray()));
+
         hashTable.clear();
-        System.out.println(hashTable);
+        System.out.println("Элементы хэш-таблицы, после удаления всех элементов: " + hashTable);
     }
 }

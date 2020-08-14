@@ -1,5 +1,6 @@
 package ru.academits.khanov.hashtable;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class HashTable<T> implements Collection<T> {
@@ -31,7 +32,7 @@ public class HashTable<T> implements Collection<T> {
         int size = 0;
 
         for (LinkedList<T> linkedList : linkedLists) {
-            if (linkedList != null) {
+            if (linkedList != null && !linkedList.isEmpty()) {
                 size += linkedList.size();
             }
         }
@@ -46,39 +47,49 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean contains(Object o) {
-        return linkedLists[Math.abs(o.hashCode() % linkedLists.length)].contains(o);
+        return linkedLists[Math.abs(o.hashCode() % linkedLists.length)] != null &&
+                linkedLists[Math.abs(o.hashCode() % linkedLists.length)].contains(o);
     }
 
-    //TODO +++++++++++++++++++++++++++++++
     private class HashTableIterator implements Iterator<T> {
-        private int currentIndex = -1;
-        private int linkedListsIndex = -1;
+        private int elementsCount = 0;
+        private int linkedListIndex = 0;
+        private int elementIndex = -1;
 
         @Override
         public boolean hasNext() {
-            return currentIndex + 1 < size();
+            return elementsCount + 1 <= size();
         }
 
         @Override
         public T next() {
-            if (currentIndex + 1 > size()) {
+            if (elementsCount + 1 > size()) {
                 throw new NoSuchElementException("Отсутствует следующий элемент");
             }
 
-
-            currentIndex++;
-
-            int count = 0;
             T value = null;
 
-            for (LinkedList<T> linkedList : linkedLists) {
-                if (linkedList != null) {
-                    count += linkedList.size();
+            while (linkedListIndex < linkedLists.length &&
+                    (linkedLists[linkedListIndex] == null || linkedLists[linkedListIndex].isEmpty())) {
+                linkedListIndex++;
+            }
+
+            elementIndex++;
+
+            if (elementIndex >= linkedLists[linkedListIndex].size()) {
+                linkedListIndex++;
+
+                while (linkedListIndex < linkedLists.length &&
+                        (linkedLists[linkedListIndex] == null || linkedLists[linkedListIndex].isEmpty())) {
+                    linkedListIndex++;
                 }
 
-                if (currentIndex <= count && linkedList != null) {
-                    return value = linkedList.get(currentIndex - count + linkedList.size());
-                }
+                elementIndex = 0;
+            }
+
+            if (linkedListIndex < linkedLists.length && !linkedLists[linkedListIndex].isEmpty()) {
+                value = linkedLists[linkedListIndex].get(elementIndex);
+                elementsCount++;
             }
 
             return value;
@@ -86,14 +97,20 @@ public class HashTable<T> implements Collection<T> {
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         return new HashTableIterator();
     }
 
-    //TODO +++++++++++++++++++++++++++++++
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] objects = new Object[size()];
+        Iterator<T> iterator = new HashTableIterator();
+
+        for (int i = 0; i < objects.length; i++) {
+            objects[i] = iterator.next();
+        }
+
+        return objects;
     }
 
     @Override
@@ -181,9 +198,25 @@ public class HashTable<T> implements Collection<T> {
         return true;
     }
 
-    //TODO +++++++++++++++++++++++++++++++
     @Override
     public Object[] toArray(Object[] a) {
-        return new Object[0];
+        if (a == null) {
+            throw new NullPointerException("Массив не может быть null");
+        }
+
+        if (a.length < size()) {
+            a = (Object[]) Array.newInstance(a.getClass().getComponentType(), size());
+
+            return a;
+        }
+
+        if (a.length > size()) {
+            for (int i = size(); i < a.length; i++)
+                a[i] = null;
+        }
+
+        System.arraycopy(linkedLists, 0, a, 0, size());
+
+        return a;
     }
 }
