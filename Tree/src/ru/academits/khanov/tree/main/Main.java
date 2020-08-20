@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 
 public class Main {
     public static void main(String[] args) {
-        //BinaryTree<Integer> binaryTree = new BinaryTree<>();
         BinaryTree<Integer> binaryTree = new BinaryTree<>(Comparator.comparingInt(Integer::intValue));
 
         binaryTree.add(8);
@@ -23,10 +22,10 @@ public class Main {
         binaryTree.add(90);
         binaryTree.add(100);
 
-        System.out.println("Проверка наличия значения 13: " + binaryTree.isContains(13));
+        System.out.println("Проверка наличия значения 13: " + binaryTree.contains(13));
         System.out.println("Удаления элемента по значению 8: " + binaryTree.remove(8));
 
-        System.out.println("Кол-во элементов дерева: " + binaryTree.getNodesCount());
+        System.out.println("Кол-во элементов дерева: " + binaryTree.size());
 
         Consumer<Integer> consumer = integer -> System.out.print(integer + " ");
 
@@ -39,6 +38,6 @@ public class Main {
         System.out.println();
 
         System.out.println("Проход дерева в глубину с рекурсией:");
-        binaryTree.visitNodesByDepthRecursion(binaryTree.getRoot(), consumer);
+        binaryTree.visitNodesByDepthRecursion(consumer);
     }
 }

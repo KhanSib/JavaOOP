@@ -5,14 +5,7 @@ public class Node<T> {
     private Node<T> right;
     private T value;
 
-    public Node() {
-    }
-
     public Node(T value) {
-        if (value == null) {
-            throw new NullPointerException("Значение не может быть null");
-        }
-
         this.value = value;
     }
 
@@ -43,9 +36,5 @@ public class Node<T> {
     @Override
     public String toString() {
         return "{" + value + "}";
-    }
-
-    public int compareTo(T value){
-        return 0;
     }
 }

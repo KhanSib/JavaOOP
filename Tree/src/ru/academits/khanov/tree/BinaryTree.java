@@ -3,12 +3,12 @@ package ru.academits.khanov.tree;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 import java.util.function.Consumer;
 
 public class BinaryTree<T> {
     private Node<T> root;
     private final Comparator<T> comparator;
+    private int count;
 
     public BinaryTree() {
         comparator = (Comparator<T>) Comparator.naturalOrder();
@@ -18,15 +18,7 @@ public class BinaryTree<T> {
         this.comparator = comparator;
     }
 
-    public Node<T> getRoot() {
-        return root;
-    }
-
     public void add(T value) {
-        if (value == null) {
-            throw new NullPointerException("Элемент для вставки не может быть null");
-        }
-
         if (root == null) {
             root = new Node<>(value);
             return;
@@ -41,6 +33,7 @@ public class BinaryTree<T> {
                     current = current.getLeft();
                 } else {
                     current.setLeft(node);
+                    count++;
                     return;
                 }
             } else {
@@ -48,145 +41,132 @@ public class BinaryTree<T> {
                     current = current.getRight();
                 } else {
                     current.setRight(node);
+                    count++;
                     return;
                 }
             }
         }
     }
 
-    public boolean isContains(T value) {
-        if (value == null) {
-            throw new NullPointerException("Элемент для поиска не может быть null");
-        }
-
+    private Node<T> getPreviousNodeOfRequiredValue(T value) {
         if (root == null) {
-            root = new Node<>(value);
-            return false;
+            return null;
         }
 
+        Node<T> previous = new Node<>(null);
+        previous.setLeft(root);
         Node<T> current = root;
 
         while (true) {
             if (comparator.compare(value, current.getValue()) == 0) {
-                return true;
+                return previous;
             }
 
             if (comparator.compare(value, current.getValue()) < 0) {
                 if (current.getLeft() != null) {
+                    previous = current;
                     current = current.getLeft();
                 } else {
-                    return false;
+                    return null;
                 }
             } else {
                 if (current.getRight() != null) {
+                    previous = current;
                     current = current.getRight();
                 } else {
-                    return false;
+                    return null;
                 }
             }
         }
+    }
+
+    public boolean contains(T value) {
+        return getPreviousNodeOfRequiredValue(value) != null;
     }
 
     public boolean remove(T value) {
-        if (value == null) {
-            throw new NullPointerException("Элемент для удаления не может быть null");
-        }
-
         if (root == null) {
-            root = new Node<>(value);
             return false;
         }
 
-        Node<T> previous = new Node<>();
-        Node<T> current = root;
-        int diraction = 0;
+        Node<T> previous = getPreviousNodeOfRequiredValue(value);
 
-        while (true) {
-            if (comparator.compare(value, current.getValue()) == 0) {
-                if (current.getLeft() == null && current.getRight() == null) {
-                    if (diraction == -1) {
-                        previous.setLeft(null);
-                    } else {
-                        previous.setRight(null);
-                    }
-
-                    return true;
-                }
-
-                if (current.getLeft() == null) {
-                    if (diraction == -1) {
-                        previous.setLeft(current.getRight());
-                    } else {
-                        previous.setRight(current.getRight());
-                    }
-
-                    return true;
-                }
-
-                if (current.getRight() == null) {
-                    if (diraction == -1) {
-                        previous.setLeft(current.getLeft());
-                    } else {
-                        previous.setRight(current.getLeft());
-                    }
-
-                    return true;
-                }
-
-                Node<T> previousMinNodeRightSubtree = new Node<>();
-                Node<T> minNodeRightSubtree = current;
-
-                while (minNodeRightSubtree.getLeft() != null) {
-                    previousMinNodeRightSubtree = minNodeRightSubtree;
-                    minNodeRightSubtree = minNodeRightSubtree.getLeft();
-                }
-
-                if (minNodeRightSubtree.getRight() != null) {
-                    previousMinNodeRightSubtree.setLeft(minNodeRightSubtree.getRight());
-                } else {
-                    previousMinNodeRightSubtree.setLeft(null);
-                }
-
-                if (diraction == -1) {
-                    previous.setLeft(minNodeRightSubtree);
-                } else {
-                    previous.setRight(minNodeRightSubtree);
-                }
-
-                minNodeRightSubtree.setLeft(current.getLeft());
-                minNodeRightSubtree.setRight(current.getRight());
-
-                if (diraction == 0) {
-                    previous.setValue(minNodeRightSubtree.getValue());
-                    previous.setLeft(root.getLeft());
-                    previous.setRight(root.getRight());
-                    root = previous;
-                }
-
-                return true;
-            }
-
-            if (comparator.compare(value,current.getValue()) < 0) {
-                if (current.getLeft() != null) {
-                    previous = current;
-                    current = current.getLeft();
-                    diraction = -1;
-                } else {
-                    return false;
-                }
-            } else {
-                if (current.getRight() != null) {
-                    previous = current;
-                    current = current.getRight();
-                    diraction = 1;
-                } else {
-                    return false;
-                }
-            }
+        if (previous == null) {
+            return false;
         }
+
+        Node<T> current = previous.getLeft();
+        boolean isLeftDirection = true;
+
+        if (comparator.compare(value, current.getValue()) != 0) {
+            current = previous.getRight();
+            isLeftDirection = false;
+        }
+
+        if (current.getLeft() == null && current.getRight() == null) {
+            if (isLeftDirection) {
+                previous.setLeft(null);
+            } else {
+                previous.setRight(null);
+            }
+
+            count--;
+            return true;
+        }
+
+        if (current.getLeft() == null) {
+            if (isLeftDirection) {
+                previous.setLeft(current.getRight());
+            } else {
+                previous.setRight(current.getRight());
+            }
+
+            count--;
+            return true;
+        }
+
+        if (current.getRight() == null) {
+            if (isLeftDirection) {
+                previous.setLeft(current.getLeft());
+            } else {
+                previous.setRight(current.getLeft());
+            }
+
+            count--;
+            return true;
+        }
+
+        Node<T> previousMinNodeRightSubtree = previous;
+        Node<T> minNodeRightSubtree = current;
+
+        while (minNodeRightSubtree.getRight() != null) {
+            previousMinNodeRightSubtree = minNodeRightSubtree;
+            minNodeRightSubtree = minNodeRightSubtree.getRight();
+        }
+
+        if (minNodeRightSubtree.getLeft() != null) {
+            previousMinNodeRightSubtree.setRight(minNodeRightSubtree.getLeft());
+        } else {
+            previousMinNodeRightSubtree.setRight(null);
+        }
+
+        if (isLeftDirection) {
+            previous.setLeft(minNodeRightSubtree);
+        } else {
+            previous.setRight(minNodeRightSubtree);
+        }
+
+        minNodeRightSubtree.setLeft(current.getLeft());
+        minNodeRightSubtree.setRight(current.getRight());
+
+        count--;
+        return true;
     }
 
-    public int getNodesCount() {
+    public int size() {
+        return count;
+    }
+   /* public int getNodesCount() {
         if (root == null) {
             return 0;
         }
@@ -210,9 +190,13 @@ public class BinaryTree<T> {
         }
 
         return count;
-    }
+    }*/
 
     public void visitNodesByWidth(Consumer<T> consumer) {
+        if (root==null){
+            return;
+        }
+
         Queue<Node<T>> queue = new LinkedList<>();
 
         queue.add(root);
@@ -232,11 +216,15 @@ public class BinaryTree<T> {
     }
 
     public void visitNodesByDepth(Consumer<T> consumer) {
-        Stack<Node<T>> stack = new Stack<>();
+        if (root==null){
+            return;
+        }
+
+        LinkedList<Node<T>> stack = new LinkedList<>();
 
         stack.push(root);
 
-        while (!stack.empty()) {
+        while (!stack.isEmpty()) {
             Node<T> current = stack.pop();
             consumer.accept(current.getValue());
 
@@ -250,15 +238,23 @@ public class BinaryTree<T> {
         }
     }
 
-    public void visitNodesByDepthRecursion(Node<T> node, Consumer<T> consumer) {
+    public void visitNodesByDepthRecursion(Consumer<T> consumer) {
+        if (root==null){
+            return;
+        }
+
+        visitNodesByDepthRecursionWithNode(root, consumer);
+    }
+
+    private void visitNodesByDepthRecursionWithNode(Node<T> node, Consumer<T> consumer) {
         consumer.accept(node.getValue());
 
         if (node.getLeft() != null) {
-            visitNodesByDepthRecursion(node.getLeft(), consumer);
+            visitNodesByDepthRecursionWithNode(node.getLeft(), consumer);
         }
 
         if (node.getRight() != null) {
-            visitNodesByDepthRecursion(node.getRight(), consumer);
+            visitNodesByDepthRecursionWithNode(node.getRight(), consumer);
         }
     }
 }
