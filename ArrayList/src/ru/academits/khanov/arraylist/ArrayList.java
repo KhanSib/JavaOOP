@@ -205,7 +205,6 @@ public class ArrayList<T> implements List<T> {
             }
         }
 
-
         return initialLength != length;
     }
 

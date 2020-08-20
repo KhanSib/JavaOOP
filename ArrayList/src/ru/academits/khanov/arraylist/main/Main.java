@@ -6,6 +6,10 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
+        ArrayList<String> l = new ArrayList<>(new String[]{
+                "строка 10", null, "строка 30", "строка 40", "строка 50"
+        });
+
         ArrayList<String> list = new ArrayList<>(new String[]{
                 "строка 10", "строка 20", "строка 30", "строка 40", "строка 50"
         });
@@ -45,7 +49,6 @@ public class Main {
         System.out.println(Arrays.toString(list3.toArray(array)));
 
         list3.clear();
-
-        System.out.println(list3);
+        System.out.println("list3 после удаления всех эл-ов: " + list3);
     }
 }
