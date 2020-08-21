@@ -2,11 +2,10 @@ package ru.academits.khanov.graph;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 import java.util.function.Consumer;
 
 public class Graph {
-    private int[][] graph;
+    private final int[][] graph;
 
     public Graph(int[][] array) {
         if (array == null) {
@@ -24,9 +23,9 @@ public class Graph {
         boolean[] visited = new boolean[graph.length];
         Queue<Integer> queue = new LinkedList<>();
 
-        for (int j = 0; j < graph.length; j++) {
-            if (!visited[j]) {
-                queue.add(j);
+        for (int i = 0; i < graph.length; i++) {
+            if (!visited[i]) {
+                queue.add(i);
             }
 
             while (!queue.isEmpty()) {
@@ -38,9 +37,9 @@ public class Graph {
                     visited[current] = true;
                 }
 
-                for (int i = 0; i < graph.length; i++) {
-                    if (graph[current][i] == 1 && current != i && !visited[i]) {
-                        queue.add(i);
+                for (int j = graph.length - 1; j >= 0; j--) {
+                    if (graph[current][j] == 1 && !visited[j]) {
+                        queue.add(j);
                     }
                 }
             }
@@ -49,11 +48,11 @@ public class Graph {
 
     public void visitNodesByDepth(Consumer<Integer> consumer) {
         boolean[] visited = new boolean[graph.length];
-        Stack<Integer> stack = new Stack<>();
+        LinkedList<Integer> stack = new LinkedList<>();
 
-        for (int j = 0; j < graph.length; j++) {
-            if (!visited[j]) {
-                stack.push(j);
+        for (int i = 0; i < graph.length; i++) {
+            if (!visited[i]) {
+                stack.push(i);
             }
 
             while (!stack.isEmpty()) {
@@ -65,11 +64,32 @@ public class Graph {
                     visited[current] = true;
                 }
 
-                for (int i = 0; i < graph.length; i++) {
-                    if (graph[current][i] == 1 && current != i && !visited[i]) {
-                        stack.push(i);
+                for (int j = graph.length - 1; j >= 0; j--) {
+                    if (graph[current][j] == 1 && !visited[j]) {
+                        stack.push(j);
                     }
                 }
+            }
+        }
+    }
+
+    public void visitNodesByDepthRecursion(Consumer<Integer> consumer) {
+        boolean[] visited = new boolean[graph.length];
+
+        for (int i = 0; i < graph.length; i++) {
+            if (!visited[i]) {
+                visitNodesByDepthRecursionWithNode(i, consumer, visited);
+            }
+        }
+    }
+
+    private void visitNodesByDepthRecursionWithNode(int index, Consumer<Integer> consumer, boolean[] visited) {
+        consumer.accept(index);
+        visited[index] = true;
+
+        for (int i = graph.length - 1; i >= 0; i--) {
+            if (graph[index][i] == 1 && !visited[i]) {
+                visitNodesByDepthRecursionWithNode(i, consumer, visited);
             }
         }
     }
