@@ -27,5 +27,9 @@ public class Main {
         System.out.println();
         System.out.println("Проход в глубину");
         graph.visitNodesByDepth(consumer);
+
+        System.out.println();
+        System.out.println("Проход в глубину с рекурсией");
+        graph.visitNodesByDepthRecursion(consumer);
     }
 }

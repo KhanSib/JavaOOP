@@ -11,10 +11,10 @@ public class Main {
         list1.insertItemAsFirst(5);
         list1.insertItemAsFirst(4);
         list1.insertItemAsFirst(3);
-        list1.insertItemAsFirst(2);
+        list1.insertItemAsFirst(null);
         list1.insertItemAsFirst(1);
 
-        SinglyLinkedList<Integer> list2 = new SinglyLinkedList<>(new Integer[]{1, 2, 3, 4});
+        SinglyLinkedList<Integer> list2 = new SinglyLinkedList<>(new Integer[]{1, 2, 3, 4, null});
 
         System.out.println("Узел 1: " + listItem1);
 
@@ -24,7 +24,7 @@ public class Main {
         System.out.println("Первый элемент списка list2: " + list2.getFirst());
         System.out.println("Элемент по индексу 2 списка list2: " + list2.getItem(2));
 
-        System.out.println("Меняем значение узла по индексу 2 на значение 100 списка list2: " + list2.setItem(2, 100));
+        System.out.println("Меняем значение узла по индексу 2 на значение null списка list2: " + list2.setItem(2, null));
         System.out.println("list2: " + list2);
 
         System.out.println("Удалили узел по индексу 0 списка list2: " + list2.deleteItem(0));
@@ -40,7 +40,7 @@ public class Main {
         SinglyLinkedList<Integer> list3 = new SinglyLinkedList<>();
         System.out.println("Размер списка 3: " + list3.getSize());
 
-        System.out.println("Удалили узел по значению 100 списка list2: " + list2.deleteItemByValue(100));
+        System.out.println("Удалили узел по значению null списка list2: " + list2.deleteItemByValue(null));
         System.out.println("list2: " + list2);
 
         System.out.println("Удалили первый узел списка list2: " + list2.deleteFirstItem());
