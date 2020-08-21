@@ -58,11 +58,13 @@ public class BinaryTree<T> {
         Node<T> current = root;
 
         while (true) {
-            if (comparator.compare(value, current.getValue()) == 0) {
+            int resultOfComparing = comparator.compare(value, current.getValue());
+
+            if (resultOfComparing == 0) {
                 return previous;
             }
 
-            if (comparator.compare(value, current.getValue()) < 0) {
+            if (resultOfComparing < 0) {
                 if (current.getLeft() != null) {
                     previous = current;
                     current = current.getLeft();
@@ -136,18 +138,18 @@ public class BinaryTree<T> {
             return true;
         }
 
-        Node<T> previousMinNodeRightSubtree = previous;
-        Node<T> minNodeRightSubtree = current;
+        Node<T> previousMinNodeRightSubtree = current;
+        Node<T> minNodeRightSubtree = current.getRight();
 
-        while (minNodeRightSubtree.getRight() != null) {
+        while (minNodeRightSubtree.getLeft() != null) {
             previousMinNodeRightSubtree = minNodeRightSubtree;
-            minNodeRightSubtree = minNodeRightSubtree.getRight();
+            minNodeRightSubtree = minNodeRightSubtree.getLeft();
         }
 
-        if (minNodeRightSubtree.getLeft() != null) {
-            previousMinNodeRightSubtree.setRight(minNodeRightSubtree.getLeft());
+        if (minNodeRightSubtree.getRight() != null) {
+            previousMinNodeRightSubtree.setLeft(minNodeRightSubtree.getRight());
         } else {
-            previousMinNodeRightSubtree.setRight(null);
+            previousMinNodeRightSubtree.setLeft(null);
         }
 
         if (isLeftDirection) {
@@ -166,34 +168,9 @@ public class BinaryTree<T> {
     public int size() {
         return count;
     }
-   /* public int getNodesCount() {
-        if (root == null) {
-            return 0;
-        }
-
-        Stack<Node<T>> stack = new Stack<>();
-
-        stack.push(root);
-        int count = 1;
-
-        while (!stack.empty()) {
-            Node<T> current = stack.pop();
-            count++;
-
-            if (current.getLeft() != null) {
-                stack.push(current.getLeft());
-            }
-
-            if (current.getRight() != null) {
-                stack.push(current.getRight());
-            }
-        }
-
-        return count;
-    }*/
 
     public void visitNodesByWidth(Consumer<T> consumer) {
-        if (root==null){
+        if (root == null) {
             return;
         }
 
@@ -216,7 +193,7 @@ public class BinaryTree<T> {
     }
 
     public void visitNodesByDepth(Consumer<T> consumer) {
-        if (root==null){
+        if (root == null) {
             return;
         }
 
@@ -239,7 +216,7 @@ public class BinaryTree<T> {
     }
 
     public void visitNodesByDepthRecursion(Consumer<T> consumer) {
-        if (root==null){
+        if (root == null) {
             return;
         }
 
