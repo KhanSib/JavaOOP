@@ -1,20 +1,19 @@
 package ru.academits.khanov.hashtable;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class HashTable<T> implements Collection<T> {
-    private final LinkedList<T>[] lists;
-    int length;
+    private final ArrayList<T>[] lists;
+    private int length;
+    private int changesCount;
 
-    public HashTable(int length) {
-        if (length < 0) {
+    public HashTable(int size) {
+        if (size < 0) {
             throw new NullPointerException("Размер не может быть отрицательным");
         }
 
-        LinkedList<Object>[] linkedLists = new LinkedList[length];
-        this.lists = (LinkedList<T>[]) linkedLists;
-        this.length =length;
+        ArrayList<Object>[] lists = new ArrayList[size];
+        this.lists = (ArrayList<T>[]) lists;
     }
 
     @Override
@@ -22,9 +21,9 @@ public class HashTable<T> implements Collection<T> {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
 
-        for (LinkedList<T> linkedList : lists) {
-            if (linkedList != null) {
-                stringBuilder.append(linkedList);
+        for (ArrayList<T> list : lists) {
+            if (list != null) {
+                stringBuilder.append(list);
             }
         }
 
@@ -35,15 +34,7 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public int size() {
-        int size = 0;
-
-        for (LinkedList<T> linkedList : lists) {
-            if (linkedList != null && !linkedList.isEmpty()) {
-                size += linkedList.size();
-            }
-        }
-
-        return size;
+        return length;
     }
 
     @Override
@@ -53,14 +44,20 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean contains(Object o) {
-        return lists[Math.abs(o.hashCode() % lists.length)] != null &&
-                lists[Math.abs(o.hashCode() % lists.length)].contains(o);
+        int index = getIndex(o);
+
+        return lists[index] != null && lists[index].contains(o);
+    }
+
+    private int getIndex(Object o) {
+        return o == null ? 0 : Math.abs(o.hashCode() % lists.length);
     }
 
     private class HashTableIterator implements Iterator<T> {
         private int elementsCount = 0;
-        private int linkedListIndex = 0;
+        private int arrayListIndex = 0;
         private int elementIndex = -1;
+        private final int initialChangesCount = changesCount;
 
         @Override
         public boolean hasNext() {
@@ -69,32 +66,32 @@ public class HashTable<T> implements Collection<T> {
 
         @Override
         public T next() {
-            if (elementsCount + 1 > size()) {
-                throw new NoSuchElementException("Отсутствует следующий элемент");
+            if (initialChangesCount != changesCount) {
+                throw new NoSuchElementException("Коллекция изминилась во время обхода");
             }
 
             T value = null;
 
-            while (linkedListIndex < lists.length &&
-                    (lists[linkedListIndex] == null || lists[linkedListIndex].isEmpty())) {
-                linkedListIndex++;
+            while (arrayListIndex < lists.length &&
+                    (lists[arrayListIndex] == null || lists[arrayListIndex].isEmpty())) {
+                arrayListIndex++;
             }
 
             elementIndex++;
 
-            if (elementIndex >= lists[linkedListIndex].size()) {
-                linkedListIndex++;
+            if (elementIndex >= lists[arrayListIndex].size()) {
+                arrayListIndex++;
 
-                while (linkedListIndex < lists.length &&
-                        (lists[linkedListIndex] == null || lists[linkedListIndex].isEmpty())) {
-                    linkedListIndex++;
+                while (arrayListIndex < lists.length &&
+                        (lists[arrayListIndex] == null || lists[arrayListIndex].isEmpty())) {
+                    arrayListIndex++;
                 }
 
                 elementIndex = 0;
             }
 
-            if (linkedListIndex < lists.length && !lists[linkedListIndex].isEmpty()) {
-                value = lists[linkedListIndex].get(elementIndex);
+            if (arrayListIndex < lists.length && !lists[arrayListIndex].isEmpty()) {
+                value = lists[arrayListIndex].get(elementIndex);
                 elementsCount++;
             }
 
@@ -110,10 +107,11 @@ public class HashTable<T> implements Collection<T> {
     @Override
     public Object[] toArray() {
         Object[] objects = new Object[size()];
-        Iterator<T> iterator = new HashTableIterator();
+        int i = 0;
 
-        for (int i = 0; i < objects.length; i++) {
-            objects[i] = iterator.next();
+        for (T element : this) {
+            objects[i] = element;
+            i++;
         }
 
         return objects;
@@ -121,80 +119,105 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean add(T data) {
-        int index = Math.abs(data == null ? 0 : data.hashCode() % lists.length);
+        int index = getIndex(data);
 
         if (lists[index] == null) {
-            lists[index] = new LinkedList<>();
+            lists[index] = new ArrayList<>();
         }
 
         lists[index].add(data);
+        length++;
+        changesCount++;
 
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        int index = Math.abs(o == null ? 0 : o.hashCode() % lists.length);
+        int index = getIndex(o);
 
         if (lists[index] == null) {
             return false;
         }
 
-        return lists[index].remove(o);
+        if (lists[index].remove(o)) {
+            length--;
+            changesCount++;
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    public boolean addAll(Collection c) {
+    public boolean addAll(Collection<? extends T> c) {
         if (c == null) {
-            return false;
+            throw new NullPointerException("Коллекция не может быть null");
+        }
+
+        int initialChangesCount = changesCount;
+
+        if (c.size() != 0) {
+            changesCount++;
+            length += c.size();
         }
 
         for (Object object : c) {
             add((T) object);
         }
 
-        return true;
+        return initialChangesCount != changesCount;
     }
 
     @Override
     public void clear() {
         Arrays.fill(lists, null);
+        length = 0;
     }
 
     @Override
-    public boolean retainAll(Collection c) {
+    public boolean retainAll(Collection<?> c) {
         if (c == null) {
             throw new NullPointerException("Коллекция не может быть null");
         }
 
+        int initialChangesCount = changesCount;
+
         for (Object object : c) {
             if (!contains(object)) {
-                while (contains(object)) {
-                    remove(object);
+                while (true) {
+                    if (!remove(object)) {
+                        break;
+                    }
                 }
             }
         }
 
-        return true;
+        return initialChangesCount != changesCount;
     }
 
     @Override
-    public boolean removeAll(Collection c) {
+    public boolean removeAll(Collection<?> c) {
         if (c == null) {
-            return false;
+            throw new NullPointerException("Коллекция не может быть null");
         }
 
+        int initialChangesCount = changesCount;
+
         for (Object object : c) {
-            while (contains(object)) {
-                remove(object);
+            while (true) {
+                if (!remove(object)) {
+                    break;
+                }
             }
         }
 
-        return true;
+        return initialChangesCount != changesCount;
     }
 
     @Override
-    public boolean containsAll(Collection c) {
+    public boolean containsAll(Collection<?> c) {
         for (Object object : c) {
             if (!contains(object)) {
                 return false;
@@ -205,20 +228,17 @@ public class HashTable<T> implements Collection<T> {
     }
 
     @Override
-    public Object[] toArray(Object[] a) {
+    public <T1> T1[] toArray(T1[] a) {
         if (a == null) {
             throw new NullPointerException("Массив не может быть null");
         }
 
         if (a.length < size()) {
-            a = (Object[]) Array.newInstance(a.getClass().getComponentType(), size());
-
-            return a;
+            return (T1[]) Arrays.copyOf(toArray(), length, a.getClass());
         }
 
         if (a.length > size()) {
-            for (int i = size(); i < a.length; i++)
-                a[i] = null;
+            a[length] = null;
         }
 
         System.arraycopy(lists, 0, a, 0, size());

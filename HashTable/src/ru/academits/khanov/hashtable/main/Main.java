@@ -5,9 +5,9 @@ import ru.academits.khanov.hashtable.HashTable;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class Main { 
+public class Main {
     public static void main(String[] args) {
-        HashTable<Integer> hashTable = new HashTable<>(10);
+        HashTable<Integer> hashTable = new HashTable<>(2);
 
         hashTable.add(2);
         hashTable.add(2);
@@ -41,5 +41,6 @@ public class Main {
 
         hashTable.clear();
         System.out.println("Элементы хэш-таблицы, после удаления всех элементов: " + hashTable);
+        System.out.println("Размер хэш-таблицы: " + hashTable.size());
     }
 }
