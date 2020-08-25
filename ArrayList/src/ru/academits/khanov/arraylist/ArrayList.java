@@ -5,9 +5,11 @@ import java.util.*;
 public class ArrayList<T> implements List<T> {
     private T[] elements;
     private int length;
+    private int changesCount;
 
     public ArrayList() {
         elements = (T[]) new Object[10];
+        length = elements.length;
     }
 
     public ArrayList(T[] items) {
@@ -67,7 +69,7 @@ public class ArrayList<T> implements List<T> {
 
     private class ArrayListIterator implements Iterator<T> {
         private int currentIndex = -1;
-        private final int initialLength = length;
+        private final int initialChangesCount = changesCount;
 
         @Override
         public boolean hasNext() {
@@ -76,7 +78,7 @@ public class ArrayList<T> implements List<T> {
 
         @Override
         public T next() {
-            if (initialLength != length) {
+            if (initialChangesCount != changesCount) {
                 throw new ConcurrentModificationException("Коллекция изминилась во время обхода");
             }
 
@@ -122,6 +124,8 @@ public class ArrayList<T> implements List<T> {
 
         elements[length] = t;
         length++;
+
+        changesCount++;
 
         return true;
     }
@@ -172,8 +176,12 @@ public class ArrayList<T> implements List<T> {
             System.arraycopy(elements, index, elements, end, length - index);
         }
 
-        int initialLength = length;
-        length += c.size();
+        int initialChangesCount = changesCount;
+
+        if (c.size() != 0) {
+            changesCount++;
+            length += c.size();
+        }
 
         int i = index;
 
@@ -182,7 +190,7 @@ public class ArrayList<T> implements List<T> {
             i++;
         }
 
-        return initialLength != length;
+        return initialChangesCount != changesCount;
     }
 
     @Override
@@ -191,7 +199,7 @@ public class ArrayList<T> implements List<T> {
             throw new NullPointerException("Коллекция не может быть null");
         }
 
-        int initialLength = length;
+        int initialChangesCount = changesCount;
 
         for (Object object : c) {
             while (true) {
@@ -205,7 +213,7 @@ public class ArrayList<T> implements List<T> {
             }
         }
 
-        return initialLength != length;
+        return initialChangesCount != changesCount;
     }
 
     @Override
@@ -214,7 +222,7 @@ public class ArrayList<T> implements List<T> {
             throw new NullPointerException("Коллекция не может быть null");
         }
 
-        int initialLength = length;
+        int initialChangesCount = changesCount;
 
         for (T element : elements) {
             if (!c.contains(element)) {
@@ -222,12 +230,13 @@ public class ArrayList<T> implements List<T> {
             }
         }
 
-        return initialLength != length;
+        return initialChangesCount != changesCount;
     }
 
     @Override
     public void clear() {
         Arrays.fill(elements, 0, length, null);
+        changesCount++;
         length = 0;
     }
 
@@ -247,8 +256,9 @@ public class ArrayList<T> implements List<T> {
         }
 
         T oldElement = elements[index];
-
         elements[index] = element;
+
+        changesCount++;
 
         return oldElement;
     }
@@ -267,6 +277,7 @@ public class ArrayList<T> implements List<T> {
         elements[index] = element;
 
         length++;
+        changesCount++;
     }
 
     @Override
@@ -281,6 +292,8 @@ public class ArrayList<T> implements List<T> {
 
         elements[length - 1] = null;
         length--;
+        changesCount++;
+
         return removedElement;
     }
 

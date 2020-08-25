@@ -4,11 +4,17 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class HashTable<T> implements Collection<T> {
-    private LinkedList<T>[] linkedLists;
+    private final LinkedList<T>[] lists;
+    int length;
 
-    public HashTable(int size) {
-        LinkedList<Object>[] linkedLists = new LinkedList[size];
-        this.linkedLists = (LinkedList<T>[]) linkedLists;
+    public HashTable(int length) {
+        if (length < 0) {
+            throw new NullPointerException("Размер не может быть отрицательным");
+        }
+
+        LinkedList<Object>[] linkedLists = new LinkedList[length];
+        this.lists = (LinkedList<T>[]) linkedLists;
+        this.length =length;
     }
 
     @Override
@@ -16,9 +22,9 @@ public class HashTable<T> implements Collection<T> {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
 
-        for (LinkedList<T> linkedList : linkedLists) {
+        for (LinkedList<T> linkedList : lists) {
             if (linkedList != null) {
-                stringBuilder.append(linkedList.toString());
+                stringBuilder.append(linkedList);
             }
         }
 
@@ -31,7 +37,7 @@ public class HashTable<T> implements Collection<T> {
     public int size() {
         int size = 0;
 
-        for (LinkedList<T> linkedList : linkedLists) {
+        for (LinkedList<T> linkedList : lists) {
             if (linkedList != null && !linkedList.isEmpty()) {
                 size += linkedList.size();
             }
@@ -47,8 +53,8 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean contains(Object o) {
-        return linkedLists[Math.abs(o.hashCode() % linkedLists.length)] != null &&
-                linkedLists[Math.abs(o.hashCode() % linkedLists.length)].contains(o);
+        return lists[Math.abs(o.hashCode() % lists.length)] != null &&
+                lists[Math.abs(o.hashCode() % lists.length)].contains(o);
     }
 
     private class HashTableIterator implements Iterator<T> {
@@ -69,26 +75,26 @@ public class HashTable<T> implements Collection<T> {
 
             T value = null;
 
-            while (linkedListIndex < linkedLists.length &&
-                    (linkedLists[linkedListIndex] == null || linkedLists[linkedListIndex].isEmpty())) {
+            while (linkedListIndex < lists.length &&
+                    (lists[linkedListIndex] == null || lists[linkedListIndex].isEmpty())) {
                 linkedListIndex++;
             }
 
             elementIndex++;
 
-            if (elementIndex >= linkedLists[linkedListIndex].size()) {
+            if (elementIndex >= lists[linkedListIndex].size()) {
                 linkedListIndex++;
 
-                while (linkedListIndex < linkedLists.length &&
-                        (linkedLists[linkedListIndex] == null || linkedLists[linkedListIndex].isEmpty())) {
+                while (linkedListIndex < lists.length &&
+                        (lists[linkedListIndex] == null || lists[linkedListIndex].isEmpty())) {
                     linkedListIndex++;
                 }
 
                 elementIndex = 0;
             }
 
-            if (linkedListIndex < linkedLists.length && !linkedLists[linkedListIndex].isEmpty()) {
-                value = linkedLists[linkedListIndex].get(elementIndex);
+            if (linkedListIndex < lists.length && !lists[linkedListIndex].isEmpty()) {
+                value = lists[linkedListIndex].get(elementIndex);
                 elementsCount++;
             }
 
@@ -115,26 +121,26 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean add(T data) {
-        int index = Math.abs(data == null ? 0 : data.hashCode() % linkedLists.length);
+        int index = Math.abs(data == null ? 0 : data.hashCode() % lists.length);
 
-        if (linkedLists[index] == null) {
-            linkedLists[index] = new LinkedList<>();
+        if (lists[index] == null) {
+            lists[index] = new LinkedList<>();
         }
 
-        linkedLists[index].add(data);
+        lists[index].add(data);
 
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        int index = Math.abs(o == null ? 0 : o.hashCode() % linkedLists.length);
+        int index = Math.abs(o == null ? 0 : o.hashCode() % lists.length);
 
-        if (linkedLists[index] == null) {
+        if (lists[index] == null) {
             return false;
         }
 
-        return linkedLists[index].remove(o);
+        return lists[index].remove(o);
     }
 
     @Override
@@ -152,7 +158,7 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public void clear() {
-        Arrays.fill(linkedLists, null);
+        Arrays.fill(lists, null);
     }
 
     @Override
@@ -215,7 +221,7 @@ public class HashTable<T> implements Collection<T> {
                 a[i] = null;
         }
 
-        System.arraycopy(linkedLists, 0, a, 0, size());
+        System.arraycopy(lists, 0, a, 0, size());
 
         return a;
     }
