@@ -1,6 +1,7 @@
 package ru.academits.khanov.list;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class SinglyLinkedList<T> {
     private ListItem<T> head;
@@ -109,17 +110,21 @@ public class SinglyLinkedList<T> {
     }
 
     public boolean deleteItemByValue(T value) {
-        if (head.getData().equals(value)) {
+        if (head == null) {
+            return false;
+        }
+
+        if (Objects.equals(head.getData(), value)) {
             deleteFirstItem();
 
             count--;
             return true;
         }
 
-        for (ListItem<T> p = head.getNext(); p != null; p = p.getNext()) {
-            if (p.getNext().getData() == null && value == null ||
-                    p.getNext().getData() != null && p.getNext().getData().equals(value)) {
-                p.setNext(p.getNext().getNext());
+        for (ListItem<T> previous = head, current = head.getNext(); current != null;
+             previous = previous.getNext(), current = current.getNext()) {
+            if (Objects.equals(current.getData(), value)) {
+                previous.setNext(current.getNext());
 
                 count--;
                 return true;
