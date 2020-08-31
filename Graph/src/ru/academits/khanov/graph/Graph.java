@@ -35,11 +35,11 @@ public class Graph {
                     consumer.accept(current);
 
                     visited[current] = true;
-                }
 
-                for (int j = graph.length - 1; j >= 0; j--) {
-                    if (graph[current][j] == 1 && !visited[j]) {
-                        queue.add(j);
+                    for (int j = 0; j < graph.length; j++) {
+                        if (graph[current][j] == 1 && !visited[j]) {
+                            queue.add(j);
+                        }
                     }
                 }
             }
@@ -62,11 +62,11 @@ public class Graph {
                     consumer.accept(current);
 
                     visited[current] = true;
-                }
 
-                for (int j = graph.length - 1; j >= 0; j--) {
-                    if (graph[current][j] == 1 && !visited[j]) {
-                        stack.push(j);
+                    for (int j = graph.length - 1; j >= 0; j--) {
+                        if (graph[current][j] == 1 && !visited[j]) {
+                            stack.push(j);
+                        }
                     }
                 }
             }
