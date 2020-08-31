@@ -172,7 +172,7 @@ public class SinglyLinkedList<T> {
 
     public SinglyLinkedList<T> getCopy() {
         if (head == null) {
-            return new SinglyLinkedList<T>();
+            return new SinglyLinkedList<>();
         }
 
         ListItem<T> listItem = new ListItem<>(head.getData(),
