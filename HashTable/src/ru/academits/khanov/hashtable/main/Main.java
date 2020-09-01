@@ -39,6 +39,16 @@ public class Main {
 
         System.out.println("Массив элементов хэш-таблицы: " + Arrays.toString(hashTable.toArray()));
 
+        hashTable.add(2);
+        hashTable.add(2);
+        hashTable.add(2);
+        System.out.println("Удаление всех элементов которых нет в одиночной коллекции (2): " + hashTable.retainAll(Collections.singletonList(2)));
+        System.out.println("Элементы хэш-таблицы: " + hashTable);
+
+        Integer[] integers = new Integer[10];
+        hashTable.toArray(integers);
+        System.out.println("Проверка toArray(T1[] a): " + Arrays.toString(integers));
+
         hashTable.clear();
         System.out.println("Элементы хэш-таблицы, после удаления всех элементов: " + hashTable);
         System.out.println("Размер хэш-таблицы: " + hashTable.size());

@@ -7,9 +7,14 @@ public class HashTable<T> implements Collection<T> {
     private int length;
     private int changesCount;
 
+    public HashTable() {
+        ArrayList<Object>[] lists = new ArrayList[10];
+        this.lists = (ArrayList<T>[]) lists;
+    }
+
     public HashTable(int size) {
-        if (size < 0) {
-            throw new NullPointerException("Размер не может быть отрицательным");
+        if (size <= 0) {
+            throw new NullPointerException("Размер не может быть нулевым или отрицательным");
         }
 
         ArrayList<Object>[] lists = new ArrayList[size];
@@ -39,7 +44,7 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public boolean isEmpty() {
-        return size() == 0;
+        return length == 0;
     }
 
     @Override
@@ -61,13 +66,17 @@ public class HashTable<T> implements Collection<T> {
 
         @Override
         public boolean hasNext() {
-            return elementsCount + 1 <= size();
+            return elementsCount + 1 <= length;
         }
 
         @Override
         public T next() {
+            if (elementsCount > length) {
+                throw new NoSuchElementException("Отсутсвует следующий элемент");
+            }
+
             if (initialChangesCount != changesCount) {
-                throw new NoSuchElementException("Коллекция изминилась во время обхода");
+                throw new ConcurrentModificationException("Коллекция изминилась во время обхода");
             }
 
             T value = null;
@@ -158,13 +167,10 @@ public class HashTable<T> implements Collection<T> {
 
         int initialChangesCount = changesCount;
 
-        if (c.size() != 0) {
+        for (T element : c) {
+            add(element);
+            length++;
             changesCount++;
-            length += c.size();
-        }
-
-        for (Object object : c) {
-            add((T) object);
         }
 
         return initialChangesCount != changesCount;
@@ -172,8 +178,15 @@ public class HashTable<T> implements Collection<T> {
 
     @Override
     public void clear() {
-        Arrays.fill(lists, null);
-        length = 0;
+        if (length > 0) {
+            for (ArrayList<T> list : lists) {
+                if (!list.isEmpty()) {
+                    list.clear();
+                }
+            }
+
+            length = 0;
+        }
     }
 
     @Override
@@ -184,14 +197,12 @@ public class HashTable<T> implements Collection<T> {
 
         int initialChangesCount = changesCount;
 
-        for (Object object : c) {
-            if (!contains(object)) {
-                while (true) {
-                    if (!remove(object)) {
-                        break;
-                    }
-                }
-            }
+        for (ArrayList<T> list : lists) {
+            int initialListLength = list.size();
+
+            list.retainAll(c);
+
+            length -= initialListLength - list.size();
         }
 
         return initialChangesCount != changesCount;
@@ -206,11 +217,7 @@ public class HashTable<T> implements Collection<T> {
         int initialChangesCount = changesCount;
 
         for (Object object : c) {
-            while (true) {
-                if (!remove(object)) {
-                    break;
-                }
-            }
+            while (remove(object)) ;
         }
 
         return initialChangesCount != changesCount;
@@ -233,15 +240,15 @@ public class HashTable<T> implements Collection<T> {
             throw new NullPointerException("Массив не может быть null");
         }
 
-        if (a.length < size()) {
+        if (a.length < length) {
             return (T1[]) Arrays.copyOf(toArray(), length, a.getClass());
         }
 
-        if (a.length > size()) {
+        if (a.length > length) {
             a[length] = null;
         }
 
-        System.arraycopy(lists, 0, a, 0, size());
+        System.arraycopy(toArray(), 0, a, 0, length);
 
         return a;
     }
