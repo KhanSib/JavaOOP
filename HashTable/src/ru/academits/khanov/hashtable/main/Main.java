@@ -44,6 +44,7 @@ public class Main {
         hashTable.add(2);
         System.out.println("Удаление всех элементов которых нет в одиночной коллекции (2): " + hashTable.retainAll(Collections.singletonList(2)));
         System.out.println("Элементы хэш-таблицы: " + hashTable);
+        System.out.println("Размер хэш-таблицы: " + hashTable.size());
 
         Integer[] integers = new Integer[10];
         hashTable.toArray(integers);
