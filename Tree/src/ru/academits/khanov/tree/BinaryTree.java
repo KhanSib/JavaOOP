@@ -11,7 +11,7 @@ public class BinaryTree<T> {
     private int count;
 
     public BinaryTree() {
-        comparator = (Comparator<T>) Comparator.naturalOrder();
+        comparator = (Comparator<T>) Comparator.nullsFirst(Comparator.naturalOrder());
     }
 
     public BinaryTree(Comparator<T> comparator) {
@@ -21,6 +21,8 @@ public class BinaryTree<T> {
     public void add(T value) {
         if (root == null) {
             root = new Node<>(value);
+            count++;
+
             return;
         }
 
@@ -100,16 +102,26 @@ public class BinaryTree<T> {
         Node<T> current = previous.getLeft();
         boolean isLeftDirection = true;
 
-        if (comparator.compare(value, current.getValue()) != 0) {
+        if (current == null || comparator.compare(value, current.getValue()) != 0) {
             current = previous.getRight();
             isLeftDirection = false;
         }
 
+        boolean isCurrentRoot = true;
+
+        if (current != root) {
+            isCurrentRoot = false;
+        }
+
         if (current.getLeft() == null && current.getRight() == null) {
-            if (isLeftDirection) {
-                previous.setLeft(null);
+            if (isCurrentRoot) {
+                root = null;
             } else {
-                previous.setRight(null);
+                if (isLeftDirection) {
+                    previous.setLeft(null);
+                } else {
+                    previous.setRight(null);
+                }
             }
 
             count--;
@@ -117,10 +129,14 @@ public class BinaryTree<T> {
         }
 
         if (current.getLeft() == null) {
-            if (isLeftDirection) {
-                previous.setLeft(current.getRight());
+            if (isCurrentRoot) {
+                root = current.getRight();
             } else {
-                previous.setRight(current.getRight());
+                if (isLeftDirection) {
+                    previous.setLeft(current.getRight());
+                } else {
+                    previous.setRight(current.getRight());
+                }
             }
 
             count--;
@@ -128,10 +144,14 @@ public class BinaryTree<T> {
         }
 
         if (current.getRight() == null) {
-            if (isLeftDirection) {
-                previous.setLeft(current.getLeft());
+            if (isCurrentRoot) {
+                root = current.getLeft();
             } else {
-                previous.setRight(current.getLeft());
+                if (isLeftDirection) {
+                    previous.setLeft(current.getLeft());
+                } else {
+                    previous.setRight(current.getLeft());
+                }
             }
 
             count--;
@@ -146,10 +166,14 @@ public class BinaryTree<T> {
             minNodeRightSubtree = minNodeRightSubtree.getLeft();
         }
 
-        if (minNodeRightSubtree.getRight() != null) {
-            previousMinNodeRightSubtree.setLeft(minNodeRightSubtree.getRight());
-        } else {
-            previousMinNodeRightSubtree.setLeft(null);
+        boolean isPreviousMinNodeRightSubtreeCurrent = previousMinNodeRightSubtree == current;
+
+        if (!isPreviousMinNodeRightSubtreeCurrent) {
+            if (minNodeRightSubtree.getRight() != null) {
+                previousMinNodeRightSubtree.setLeft(minNodeRightSubtree.getRight());
+            } else {
+                previousMinNodeRightSubtree.setLeft(null);
+            }
         }
 
         if (isLeftDirection) {
@@ -159,7 +183,16 @@ public class BinaryTree<T> {
         }
 
         minNodeRightSubtree.setLeft(current.getLeft());
-        minNodeRightSubtree.setRight(current.getRight());
+
+        if (isPreviousMinNodeRightSubtreeCurrent) {
+            minNodeRightSubtree.setRight(null);
+        } else {
+            minNodeRightSubtree.setRight(current.getRight());
+        }
+
+        if (isCurrentRoot) {
+            root = minNodeRightSubtree;
+        }
 
         count--;
         return true;
