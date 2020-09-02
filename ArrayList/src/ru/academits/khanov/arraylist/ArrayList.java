@@ -9,19 +9,18 @@ public class ArrayList<T> implements List<T> {
 
     public ArrayList() {
         elements = (T[]) new Object[10];
-        length = elements.length;
     }
 
     public ArrayList(T[] items) {
         if (items != null) {
-            elements = Arrays.copyOf(items, items.length * 2);
+            elements = Arrays.copyOf(items, items.length * 2 + 10);
             length = items.length;
         }
     }
 
     public ArrayList(int capacity) {
         if (capacity < 0) {
-            throw new IndexOutOfBoundsException("Вместимость массива не может быть нулевой или отрицательной: "
+            throw new IllegalArgumentException("Вместимость массива не может быть отрицательной: "
                     + capacity);
         }
 
@@ -49,7 +48,7 @@ public class ArrayList<T> implements List<T> {
     }
 
     private void increaseCapacity() {
-        elements = Arrays.copyOf(elements, elements.length * 2);
+        elements = Arrays.copyOf(elements, elements.length * 2 + 10);
     }
 
     @Override
@@ -78,6 +77,10 @@ public class ArrayList<T> implements List<T> {
 
         @Override
         public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("Отсутсвует следующий элемент");
+            }
+
             if (initialChangesCount != changesCount) {
                 throw new ConcurrentModificationException("Коллекция изминилась во время обхода");
             }
@@ -164,7 +167,7 @@ public class ArrayList<T> implements List<T> {
             throw new NullPointerException("Коллекция не может быть null");
         }
 
-        if (index >= length && index < 0) {
+        if (index > length || index < 0) {
             throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка, index: " + index);
         }
 
@@ -172,7 +175,7 @@ public class ArrayList<T> implements List<T> {
 
         int end = index + c.size();
 
-        if (index < length) {
+        if (index <= length) {
             System.arraycopy(elements, index, elements, end, length - index);
         }
 
@@ -201,15 +204,10 @@ public class ArrayList<T> implements List<T> {
 
         int initialChangesCount = changesCount;
 
-        for (Object object : c) {
-            while (true) {
-                int index = indexOf(object);
-
-                if (index >= 0) {
-                    remove(index);
-                } else {
-                    break;
-                }
+        for (int i = 0; i < length; i++) {
+            if (c.contains(elements[i])) {
+                remove(i);
+                i--;
             }
         }
 
@@ -224,9 +222,10 @@ public class ArrayList<T> implements List<T> {
 
         int initialChangesCount = changesCount;
 
-        for (T element : elements) {
-            if (!c.contains(element)) {
-                remove(element);
+        for (int i = 0; i < length; i++) {
+            if (!c.contains(elements[i])) {
+                remove(i);
+                i--;
             }
         }
 
@@ -258,14 +257,12 @@ public class ArrayList<T> implements List<T> {
         T oldElement = elements[index];
         elements[index] = element;
 
-        changesCount++;
-
         return oldElement;
     }
 
     @Override
     public void add(int index, T element) {
-        if (index >= length || index < 0) {
+        if (index > length || index < 0) {
             throw new IndexOutOfBoundsException("Индекс выходит за пределы размера списка, index: " + index);
         }
 
@@ -300,7 +297,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int indexOf(Object o) {
         for (int i = 0; i < length; i++) {
-            if (elements[i] != null && elements[i].equals(o) || elements[i] == null && o == null) {
+            if (Objects.equals(elements[i], o) || (elements[i] == null && o == null)) {
                 return i;
             }
         }
@@ -311,7 +308,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int lastIndexOf(Object o) {
         for (int i = length - 1; i >= 0; i--) {
-            if (elements[i] != null && elements[i].equals(o) || elements[i] == null && o == null) {
+            if (Objects.equals(elements[i], o) || (elements[i] == null && o == null)) {
                 return i;
             }
         }
