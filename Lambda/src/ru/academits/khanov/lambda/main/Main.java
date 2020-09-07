@@ -2,11 +2,10 @@ package ru.academits.khanov.lambda.main;
 
 import ru.academits.khanov.lambda.Person;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,15 +32,13 @@ public class Main {
                 .distinct()
                 .collect(Collectors.toList());
 
-        System.out.println("Уникальные имена: ");
-        uniqNames.forEach(s -> System.out.print(s + ", "));
+        System.out.println("Уникальные имена: " + uniqNames);
 
         List<Person> peoplesYounger18 = persons.stream()
                 .filter(x -> x.getAge() < 18)
                 .collect(Collectors.toList());
 
-        System.out.println("Люди младше 18 лет: ");
-        peoplesYounger18.forEach(s -> System.out.print(s + ", "));
+        System.out.println("Люди младше 18 лет: " + peoplesYounger18);
 
         System.out.println("Средний возраст людей младше 18 лет: " +
                 peoplesYounger18
@@ -49,7 +46,29 @@ public class Main {
                         .mapToInt(Person::getAge)
                         .average());
 
-        Map<Object, List<Person>> map = persons.stream().collect(Collectors.groupingBy(Person::getName));
-        map.forEach((k, v) -> System.out.print(k + " " + v + ","));
+        Map<String, Double> averageAgeByName = persons.stream()
+                .collect(Collectors.groupingBy(Person::getName, Collectors.averagingDouble(Person::getAge)));
+
+        System.out.println("Средний возраст по именам: " + averageAgeByName);
+
+        List<Person> peoplesWithAgeBetween20And45 = persons.stream()
+                .filter(x -> x.getAge() > 20 && x.getAge() < 45)
+                .sorted(Comparator.comparing(Person::getName))
+                .collect(Collectors.toList());
+
+        System.out.println("Список людей с возрастом от 20 до 45 лет: " + peoplesWithAgeBetween20And45);
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Сколько элементов необходимо вычислить: ");
+        long count = scanner.nextInt();
+
+        DoubleStream squareRoots = DoubleStream.iterate(0, x -> x + 1).map(Math::sqrt).limit(count);
+        squareRoots.forEach(System.out::println);
+
+        Stream.iterate(new int[]{0, 1}, a -> new int[]{a[1], a[0] + a[1]})
+                .limit(count)
+                .map(x -> x[0])
+                .forEach(System.out::println);
     }
 }
