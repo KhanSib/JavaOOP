@@ -7,7 +7,7 @@ import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
-        HashTable<Integer> hashTable = new HashTable<>(2);
+        HashTable<Integer> hashTable = new HashTable<>(10);
 
         hashTable.add(2);
         hashTable.add(2);

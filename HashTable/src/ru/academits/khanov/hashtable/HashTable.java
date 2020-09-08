@@ -71,7 +71,7 @@ public class HashTable<T> implements Collection<T> {
 
         @Override
         public T next() {
-            if (elementsCount > length) {
+            if (!hasNext()) {
                 throw new NoSuchElementException("Отсутсвует следующий элемент");
             }
 
@@ -169,8 +169,6 @@ public class HashTable<T> implements Collection<T> {
 
         for (T element : c) {
             add(element);
-            length++;
-            changesCount++;
         }
 
         return initialChangesCount != changesCount;
@@ -180,12 +178,12 @@ public class HashTable<T> implements Collection<T> {
     public void clear() {
         if (length > 0) {
             for (ArrayList<T> list : lists) {
-                if (!list.isEmpty()) {
+                if (list != null && !list.isEmpty()) {
+                    length -= list.size();
+
                     list.clear();
                 }
             }
-
-            length = 0;
         }
     }
 
@@ -198,11 +196,15 @@ public class HashTable<T> implements Collection<T> {
         int initialChangesCount = changesCount;
 
         for (ArrayList<T> list : lists) {
-            int initialListLength = list.size();
+            if (list != null) {
+                int initialListLength = list.size();
 
-            list.retainAll(c);
+                list.retainAll(c);
+                int currentListLength = list.size();
 
-            length -= initialListLength - list.size();
+                changesCount += initialListLength - currentListLength;
+                length -= initialListLength - currentListLength;
+            }
         }
 
         return initialChangesCount != changesCount;
@@ -216,8 +218,16 @@ public class HashTable<T> implements Collection<T> {
 
         int initialChangesCount = changesCount;
 
-        for (Object object : c) {
-            while (remove(object)) ;
+        for (ArrayList<T> list : lists) {
+            if (list != null) {
+                int initialListLength = list.size();
+
+                list.removeAll(c);
+                int currentListLength = list.size();
+
+                changesCount += initialListLength - currentListLength;
+                length -= initialListLength - currentListLength;
+            }
         }
 
         return initialChangesCount != changesCount;
