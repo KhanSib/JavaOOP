@@ -60,7 +60,6 @@ public class Graph {
 
                 if (!visited[current]) {
                     consumer.accept(current);
-
                     visited[current] = true;
 
                     for (int j = graph.length - 1; j >= 0; j--) {
@@ -76,7 +75,7 @@ public class Graph {
     public void visitNodesByDepthRecursion(Consumer<Integer> consumer) {
         boolean[] visited = new boolean[graph.length];
 
-        for (int i = 0; i < graph.length; i++) {
+        for (int i = graph.length - 1; i >= 0; i--) {
             if (!visited[i]) {
                 visitNodesByDepthRecursionWithNode(i, consumer, visited);
             }

@@ -8,14 +8,16 @@ public class ArrayList<T> implements List<T> {
     private int changesCount;
 
     public ArrayList() {
-        elements = (T[]) new Object[10];
+        elements = (T[]) new Object[0];
     }
 
     public ArrayList(T[] items) {
-        if (items != null) {
-            elements = Arrays.copyOf(items, items.length * 2 + 10);
-            length = items.length;
+        if (items == null) {
+            throw new NullPointerException("Массив не может быть null");
         }
+
+        elements = Arrays.copyOf(items, items.length * 2 + 10);
+        length = items.length;
     }
 
     public ArrayList(int capacity) {
