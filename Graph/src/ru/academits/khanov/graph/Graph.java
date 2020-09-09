@@ -75,7 +75,7 @@ public class Graph {
     public void visitNodesByDepthRecursion(Consumer<Integer> consumer) {
         boolean[] visited = new boolean[graph.length];
 
-        for (int i = graph.length - 1; i >= 0; i--) {
+        for (int i = 0; i < graph.length; i++) {
             if (!visited[i]) {
                 visitNodesByDepthRecursionWithNode(i, consumer, visited);
             }
@@ -86,7 +86,7 @@ public class Graph {
         consumer.accept(index);
         visited[index] = true;
 
-        for (int i = graph.length - 1; i >= 0; i--) {
+        for (int i = 1; i < graph.length; i++) {
             if (graph[index][i] == 1 && !visited[i]) {
                 visitNodesByDepthRecursionWithNode(i, consumer, visited);
             }
