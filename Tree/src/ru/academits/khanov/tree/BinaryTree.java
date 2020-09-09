@@ -107,11 +107,7 @@ public class BinaryTree<T> {
             isLeftDirection = false;
         }
 
-        boolean isCurrentRoot = true;
-
-        if (current != root) {
-            isCurrentRoot = false;
-        }
+        boolean isCurrentRoot = current == root;
 
         if (current.getLeft() == null && current.getRight() == null) {
             if (isCurrentRoot) {
@@ -184,9 +180,7 @@ public class BinaryTree<T> {
 
         minNodeRightSubtree.setLeft(current.getLeft());
 
-        if (isPreviousMinNodeRightSubtreeCurrent) {
-            minNodeRightSubtree.setRight(null);
-        } else {
+        if (!isPreviousMinNodeRightSubtreeCurrent) {
             minNodeRightSubtree.setRight(current.getRight());
         }
 

@@ -7,32 +7,46 @@ import java.util.function.Consumer;
 
 public class Main {
     public static void main(String[] args) {
+        BinaryTree<Integer> binaryTree0 = new BinaryTree<>();
+        binaryTree0.add(10);
+        binaryTree0.add(5);
+        binaryTree0.add(15);
+        binaryTree0.add(2);
+        binaryTree0.add(8);
+        binaryTree0.add(9);
+
+        binaryTree0.visitNodesByDepthRecursion(integer -> System.out.print(integer + " "));
+
+        binaryTree0.remove(5);
+        System.out.println();
+        binaryTree0.visitNodesByDepthRecursion(integer -> System.out.print(integer + " "));
+        System.out.println();
+
         BinaryTree<Integer> binaryTree1 = new BinaryTree<>();
         binaryTree1.add(0);
-        binaryTree1.add(-2);
-        binaryTree1.add(2);
+        binaryTree1.add(-3);
+        binaryTree1.add(3);
         binaryTree1.add(-4);
         binaryTree1.add(-1);
-        binaryTree1.add(1);
         binaryTree1.add(4);
-        binaryTree1.add(1);
+        binaryTree1.add(2);
+        binaryTree1.add(-2);
+        binaryTree1.add(-1);
+        binaryTree1.add(-2);
+        binaryTree1.add(-1);
+        binaryTree1.add(null);
         binaryTree1.add(null);
 
         System.out.println("Дерево 1: ");
-        binaryTree1.visitNodesByDepthRecursion(integer -> System.out.print(integer + " "));
+        binaryTree1.visitNodesByWidth(integer -> System.out.print(integer + " "));
 
         System.out.println();
         System.out.println("Кол-во элементов дерева 1: " + binaryTree1.size());
 
-        binaryTree1.remove(-2);
-        binaryTree1.remove(0);
-        binaryTree1.remove(-1);
-        binaryTree1.remove(4);
-        binaryTree1.remove(-4);
-        binaryTree1.remove(2);
+        binaryTree1.remove(-3);
 
-        System.out.println("Дерево 1, после удаления -2, 0, -1, 4, -4, 2: ");
-        binaryTree1.visitNodesByDepthRecursion(integer -> System.out.print(integer + " "));
+        System.out.println("Дерево 1, после удаления -3: ");
+        binaryTree1.visitNodesByWidth(integer -> System.out.print(integer + " "));
 
         System.out.println();
         System.out.println("Кол-во элементов дерева 1: " + binaryTree1.size());
@@ -81,6 +95,7 @@ public class Main {
         System.out.println();
 
         System.out.println("Проход дерева в глубину с рекурсией:");
+
         binaryTree2.visitNodesByDepthRecursion(consumer);
     }
 }
