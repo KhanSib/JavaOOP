@@ -4,11 +4,12 @@ import java.io.*;
 import java.util.*;
 
 public class FileMergeSorting<T> {
-    List<File<T>> files;
-    String outputFile;
+    private final List<File<T>> files;
+    private final String outputFile;
     private final Comparator<T> comparator;
+    private boolean isInteger;
 
-    public FileMergeSorting(String[] inputFiles, String outputFile) throws FileNotFoundException {
+    public FileMergeSorting(String[] inputFiles, String outputFile, boolean isInteger) throws FileNotFoundException {
         files = new ArrayList<>();
 
         for (String inputFile : inputFiles) {
@@ -16,7 +17,12 @@ public class FileMergeSorting<T> {
         }
 
         this.outputFile = outputFile;
-        comparator = (Comparator<T>) Comparator.nullsFirst(Comparator.naturalOrder());
+
+        if (isInteger) {
+            comparator = Comparator.comparingInt(Object::hashCode);
+        } else {
+            comparator = (Comparator<T>) Comparator.naturalOrder();
+        }
     }
 
     public FileMergeSorting(String[] inputFiles, String outputFile, Comparator<T> comparator) throws FileNotFoundException {
@@ -37,15 +43,13 @@ public class FileMergeSorting<T> {
                 int currentIndex = 0;
 
                 for (int i = 0; i < files.size(); i++) {
-                    if (comparator.compare(currentElement, files.get(i).getElement()) >= 0) {
+                    if (comparator.compare(currentElement, files.get(i).getElement()) > 0) {
                         currentElement = files.get(i).getElement();
                         currentIndex = i;
                     }
                 }
-                //TODO: remove printLn
-                System.out.println(currentElement);
-                writer.println(currentElement);
 
+                writer.println(currentElement);
 
                 if (files.get(currentIndex).getScanner().hasNext()) {
                     files.get(currentIndex).setElement((T) files.get(currentIndex).getScanner().nextLine());
@@ -53,7 +57,8 @@ public class FileMergeSorting<T> {
                     files.remove(currentIndex);
                 }
             }
-        } catch (FileNotFoundException e) {
+        } catch (
+                FileNotFoundException e) {
             e.printStackTrace();
         }
     }
