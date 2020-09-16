@@ -18,8 +18,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        args = new String[]{"-a", "-s", "out.txt", "in1.txt", "in2.txt", "in3.txt"};
-
         if (args.length < 3) {
             help();
             throw new IllegalArgumentException("Не достаточно аргументов командной строки.");
