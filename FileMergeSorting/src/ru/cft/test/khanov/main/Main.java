@@ -18,6 +18,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+       // args =new String[]{"-i","out.txt","in1.txt", "in2.txt","in3.txt","in4.txt"};
+
         if (args.length < 3) {
             help();
             throw new IllegalArgumentException("Не достаточно аргументов командной строки.");
@@ -50,7 +52,7 @@ public class Main {
                 throw new IllegalArgumentException("Не валидные аргументы командной строки.");
             }
         } else {
-            if (args0.equals("-s") || args0.equals("i")) {
+            if (args0.equals("-s") || args0.equals("-i")) {
                 if (args0.equals("-s")) {
                     elementsType = ElementsType.STRING;
                 }

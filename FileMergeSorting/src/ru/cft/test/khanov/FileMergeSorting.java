@@ -12,7 +12,11 @@ public class FileMergeSorting<T> {
         fileScanners = new ArrayList<>();
 
         for (String inputFile : inputFiles) {
-            fileScanners.add(new FileScanner<>(inputFile));
+            FileScanner<T> currentFileScanner = new FileScanner<>(inputFile);
+
+            if (currentFileScanner.getElement() != null) {
+                fileScanners.add(currentFileScanner);
+            }
         }
 
         this.outputFile = outputFile;
