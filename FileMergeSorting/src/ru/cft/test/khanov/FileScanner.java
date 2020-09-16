@@ -4,11 +4,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class File<T> {
+public class FileScanner<T> {
     private T element;
-    private Scanner scanner;
+    private final Scanner scanner;
 
-    public File(String fileName) throws FileNotFoundException {
+    public FileScanner(String fileName) throws FileNotFoundException {
         Scanner scanner = new Scanner(new FileInputStream(fileName));
         this.scanner = scanner;
 

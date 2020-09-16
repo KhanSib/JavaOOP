@@ -4,57 +4,60 @@ import java.io.*;
 import java.util.*;
 
 public class FileMergeSorting<T> {
-    private final List<File<T>> files;
+    private final List<FileScanner<T>> fileScanners;
     private final String outputFile;
     private final Comparator<T> comparator;
-    private boolean isInteger;
 
-    public FileMergeSorting(String[] inputFiles, String outputFile, boolean isInteger) throws FileNotFoundException {
-        files = new ArrayList<>();
+    public FileMergeSorting(String[] inputFiles, String outputFile, ElementsType elementsType) throws FileNotFoundException {
+        fileScanners = new ArrayList<>();
 
         for (String inputFile : inputFiles) {
-            files.add(new File<>(inputFile));
+            fileScanners.add(new FileScanner<>(inputFile));
         }
 
         this.outputFile = outputFile;
 
-        if (isInteger) {
-            comparator = Comparator.comparingInt(Object::hashCode);
-        } else {
-            comparator = (Comparator<T>) Comparator.naturalOrder();
-        }
+        comparator = getComparator(elementsType);
     }
 
-    public FileMergeSorting(String[] inputFiles, String outputFile, Comparator<T> comparator) throws FileNotFoundException {
-        files = new ArrayList<>();
-
-        for (String inputFile : inputFiles) {
-            files.add(new File<>(inputFile));
+    private Comparator<T> getComparator(ElementsType elementsType) {
+        if (elementsType == ElementsType.INTEGER) {
+            return (Comparator<T>) Comparator.comparingInt(Object::hashCode);
         }
 
-        this.outputFile = outputFile;
-        this.comparator = comparator;
+        if (elementsType == ElementsType.STRING) {
+            return (Comparator<T>) Comparator.naturalOrder();
+        }
+
+        return null;
     }
 
-    public void mergingFiles() {
+    public void mergingFiles(OrderBy orderBy) {
         try (PrintWriter writer = new PrintWriter(outputFile)) {
-            while (!files.isEmpty()) {
-                T currentElement = files.get(0).getElement();
+            while (!fileScanners.isEmpty()) {
+                T currentElement = fileScanners.get(0).getElement();
                 int currentIndex = 0;
 
-                for (int i = 0; i < files.size(); i++) {
-                    if (comparator.compare(currentElement, files.get(i).getElement()) > 0) {
-                        currentElement = files.get(i).getElement();
+                int coefficient = 1;
+
+                if (orderBy == OrderBy.DESC) {
+                    coefficient = -1;
+                }
+
+                for (int i = 0; i < fileScanners.size(); i++) {
+                    if (comparator.compare(currentElement, fileScanners.get(i).getElement()) * coefficient > 0) {
+                        currentElement = fileScanners.get(i).getElement();
                         currentIndex = i;
                     }
                 }
 
                 writer.println(currentElement);
 
-                if (files.get(currentIndex).getScanner().hasNext()) {
-                    files.get(currentIndex).setElement((T) files.get(currentIndex).getScanner().nextLine());
+                if (fileScanners.get(currentIndex).getScanner().hasNext()) {
+                    fileScanners.get(currentIndex).setElement((T) fileScanners.get(currentIndex).getScanner().nextLine());
                 } else {
-                    files.remove(currentIndex);
+                    fileScanners.get(currentIndex).getScanner().close();
+                    fileScanners.remove(currentIndex);
                 }
             }
         } catch (
@@ -63,4 +66,3 @@ public class FileMergeSorting<T> {
         }
     }
 }
-
