@@ -21,19 +21,21 @@ public class Main {
         System.out.println("Длина отрезка a = " + a.getLength());
 
         System.out.print("Пересечение отрезков a и b: ");
+        Range intersectionAB = a.getIntersection(b);
 
-        if (a.getIntersection(b) == null) {
+        if (intersectionAB == null) {
             System.out.println("Пересечения нет");
         } else {
-            System.out.println(a.getIntersection(b));
+            System.out.println(intersectionAB);
         }
 
         System.out.print("Пересечение отрезков c и d: ");
+        Range intersectionCD = c.getIntersection(d);
 
-        if (c.getIntersection(d) == null) {
+        if (intersectionCD == null) {
             System.out.println("Пересечения нет");
         } else {
-            System.out.println(c.getIntersection(d));
+            System.out.println(intersectionCD);
         }
 
         System.out.print("Объединение отрезков a и b: ");
