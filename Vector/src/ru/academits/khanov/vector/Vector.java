@@ -7,8 +7,7 @@ public class Vector {
 
     public Vector(int dimension) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException("Размерность вектора не может быть нилевой или отрицательной." +
-                    System.lineSeparator() + "Размерность = " + dimension);
+            throw new IllegalArgumentException("Размерность вектора не может быть нулевой или отрицательной." + System.lineSeparator() + "Размерность = " + dimension);
         }
 
         elements = new double[dimension];
@@ -24,8 +23,7 @@ public class Vector {
 
     public Vector(int dimension, Vector vector) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException("Размерность вектора не может быть нилевой или отрицательной." +
-                    System.lineSeparator() + "Размерность = " + dimension);
+            throw new IllegalArgumentException("Размерность вектора не может быть нулевой или отрицательной." + System.lineSeparator() + "Размерность = " + dimension);
         }
 
         if (vector == null) {
@@ -49,12 +47,11 @@ public class Vector {
 
     public Vector(int dimension, double[] array) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException("Размерность вектора не может быть нилевой или отрицательной." +
-                    System.lineSeparator() + "Размерность = " + dimension);
+            throw new IllegalArgumentException("Размерность вектора не может быть нулевой или отрицательной." + System.lineSeparator() + "Размерность = " + dimension);
         }
 
         if (array == null) {
-            throw new IllegalArgumentException("Массив не может быть null");
+            throw new NullPointerException("Массив не может быть null");
         }
 
         elements = Arrays.copyOf(array, dimension);
@@ -106,7 +103,7 @@ public class Vector {
 
     public Vector add(Vector vector) {
         if (vector == null) {
-            throw new IllegalArgumentException("Аргумент не может быть null");
+            throw new NullPointerException("Аргумент не может быть null");
         }
 
         if (elements.length < vector.elements.length) {
@@ -122,7 +119,7 @@ public class Vector {
 
     public Vector subtract(Vector vector) {
         if (vector == null) {
-            throw new IllegalArgumentException("Аргумент не может быть null");
+            throw new NullPointerException("Аргумент не может быть null");
         }
 
         if (elements.length < vector.elements.length) {
@@ -160,31 +157,28 @@ public class Vector {
 
     public double getComponent(int index) {
         if (index < 0 || index >= elements.length) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера вектора" +
-                    System.lineSeparator() + "Индекс = " + index);
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера вектора" + System.lineSeparator() + "Индекс = " + index);
         }
 
         return elements[index];
     }
 
-    public Vector setComponent(int index, double component) {
+    public void setComponent(int index, double component) {
         if (index < 0 || index >= elements.length) {
-            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера вектора" +
-                    System.lineSeparator() + "Индекс = " + index);
+            throw new IndexOutOfBoundsException("Индекс выходит за пределы размера вектора" + System.lineSeparator() + "Индекс = " + index);
         }
 
         elements[index] = component;
 
-        return this;
     }
 
     public static Vector sum(Vector vector1, Vector vector2) {
         if (vector1 == null) {
-            throw new IllegalArgumentException("Первый аргумент null, вектор не может быть null");
+            throw new NullPointerException("Первый аргумент null, вектор не может быть null");
         }
 
         if (vector2 == null) {
-            throw new IllegalArgumentException("Второй аргумент null, вектор не может быть null");
+            throw new NullPointerException("Второй аргумент null, вектор не может быть null");
         }
 
         Vector vector = new Vector(vector1);
@@ -194,11 +188,11 @@ public class Vector {
 
     public static Vector subtract(Vector vector1, Vector vector2) {
         if (vector1 == null) {
-            throw new IllegalArgumentException("Первый аргумент null, вектор не может быть null");
+            throw new NullPointerException("Первый аргумент null, вектор не может быть null");
         }
 
         if (vector2 == null) {
-            throw new IllegalArgumentException("Второй аргумент null, вектор не может быть null");
+            throw new NullPointerException("Второй аргумент null, вектор не может быть null");
         }
 
         Vector vector = new Vector(vector1);
@@ -208,11 +202,11 @@ public class Vector {
 
     public static double getVectorsProduct(Vector vector1, Vector vector2) {
         if (vector1 == null) {
-            throw new IllegalArgumentException("Первый аргумент null, вектор не может быть null");
+            throw new NullPointerException("Первый аргумент null, вектор не может быть null");
         }
 
         if (vector2 == null) {
-            throw new IllegalArgumentException("Второй аргумент null, вектор не может быть null");
+            throw new NullPointerException("Второй аргумент null, вектор не может быть null");
         }
 
         double vectorsProduct = 0;
