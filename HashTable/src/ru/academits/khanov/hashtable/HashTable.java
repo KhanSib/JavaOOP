@@ -90,13 +90,12 @@ public class HashTable<T> implements Collection<T> {
 
             if (elementIndex >= lists[arrayListIndex].size()) {
                 arrayListIndex++;
+                elementIndex = 0;
 
                 while (arrayListIndex < lists.length &&
                         (lists[arrayListIndex] == null || lists[arrayListIndex].isEmpty())) {
                     arrayListIndex++;
                 }
-
-                elementIndex = 0;
             }
 
             if (arrayListIndex < lists.length && !lists[arrayListIndex].isEmpty()) {
@@ -179,11 +178,12 @@ public class HashTable<T> implements Collection<T> {
         if (length > 0) {
             for (ArrayList<T> list : lists) {
                 if (list != null && !list.isEmpty()) {
-                    length -= list.size();
-
                     list.clear();
                 }
             }
+
+            changesCount++;
+            length = 0;
         }
     }
 
@@ -202,7 +202,7 @@ public class HashTable<T> implements Collection<T> {
                 list.retainAll(c);
                 int currentListLength = list.size();
 
-                changesCount += initialListLength - currentListLength;
+                changesCount++;
                 length -= initialListLength - currentListLength;
             }
         }
@@ -225,7 +225,7 @@ public class HashTable<T> implements Collection<T> {
                 list.removeAll(c);
                 int currentListLength = list.size();
 
-                changesCount += initialListLength - currentListLength;
+                changesCount++;
                 length -= initialListLength - currentListLength;
             }
         }
