@@ -61,7 +61,7 @@ public class Main {
         System.out.println("Список людей с возрастом от 20 до 45 лет: " + peoplesWithAgeBetween20And45);
 
         Scanner scanner = new Scanner(System.in);
-/*
+
         System.out.println("Сколько элементов необходимо вычислить: ");
         int count = scanner.nextInt();
 
@@ -71,6 +71,6 @@ public class Main {
         Stream.iterate(new int[]{0, 1}, a -> new int[]{a[1], a[0] + a[1]})
                 .limit(count)
                 .map(x -> x[0])
-                .forEach(System.out::println);*/
+                .forEach(System.out::println);
     }
 }
