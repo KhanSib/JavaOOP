@@ -8,7 +8,7 @@ public class ArrayList<T> implements List<T> {
     private int changesCount;
 
     public ArrayList() {
-        elements = (T[]) new Object[0];
+        elements = (T[]) new Object[10];
     }
 
     public ArrayList(T[] items) {
@@ -22,8 +22,7 @@ public class ArrayList<T> implements List<T> {
 
     public ArrayList(int capacity) {
         if (capacity < 0) {
-            throw new IllegalArgumentException("Вместимость массива не может быть отрицательной: "
-                    + capacity);
+            throw new IllegalArgumentException("Вместимость массива не может быть отрицательной: " + capacity);
         }
 
         elements = (T[]) new Object[capacity];
@@ -177,7 +176,7 @@ public class ArrayList<T> implements List<T> {
 
         int end = index + c.size();
 
-        if (index <= length) {
+        if (index < length) {
             System.arraycopy(elements, index, elements, end, length - index);
         }
 
@@ -299,7 +298,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int indexOf(Object o) {
         for (int i = 0; i < length; i++) {
-            if (Objects.equals(elements[i], o) || (elements[i] == null && o == null)) {
+            if (Objects.equals(elements[i], o)) {
                 return i;
             }
         }
@@ -310,7 +309,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int lastIndexOf(Object o) {
         for (int i = length - 1; i >= 0; i--) {
-            if (Objects.equals(elements[i], o) || (elements[i] == null && o == null)) {
+            if (Objects.equals(elements[i], o)) {
                 return i;
             }
         }
