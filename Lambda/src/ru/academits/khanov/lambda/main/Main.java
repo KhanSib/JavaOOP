@@ -27,24 +27,26 @@ public class Main {
                 new Person("Uliya", 45)
         ));
 
-        List<String> uniqNames = persons.stream()
+        System.out.print("Уникальные имена: " + persons.stream()
                 .map(Person::getName)
                 .distinct()
-                .collect(Collectors.toList());
-
-        System.out.println("Уникальные имена: " + uniqNames);
+                .sorted()
+                .collect(Collectors.joining(", ", "", ".")));
 
         List<Person> peoplesYounger18 = persons.stream()
                 .filter(x -> x.getAge() < 18)
                 .collect(Collectors.toList());
 
+        System.out.println();
         System.out.println("Люди младше 18 лет: " + peoplesYounger18);
 
-        System.out.println("Средний возраст людей младше 18 лет: " +
-                peoplesYounger18
-                        .stream()
-                        .mapToInt(Person::getAge)
-                        .average());
+        OptionalDouble ageAverage = peoplesYounger18
+                .stream()
+                .mapToInt(Person::getAge)
+                .average();
+
+        System.out.println("Средний возраст людей младше 18 лет: " + ageAverage);
+
 
         Map<String, Double> averageAgeByName = persons.stream()
                 .collect(Collectors.groupingBy(Person::getName, Collectors.averagingDouble(Person::getAge)));
@@ -53,15 +55,15 @@ public class Main {
 
         List<Person> peoplesWithAgeBetween20And45 = persons.stream()
                 .filter(x -> x.getAge() > 20 && x.getAge() < 45)
-                .sorted(Comparator.comparing(Person::getName))
+                .sorted(Comparator.comparing(Person::getAge).reversed())
                 .collect(Collectors.toList());
 
         System.out.println("Список людей с возрастом от 20 до 45 лет: " + peoplesWithAgeBetween20And45);
 
         Scanner scanner = new Scanner(System.in);
-
+/*
         System.out.println("Сколько элементов необходимо вычислить: ");
-        long count = scanner.nextInt();
+        int count = scanner.nextInt();
 
         DoubleStream squareRoots = DoubleStream.iterate(0, x -> x + 1).map(Math::sqrt).limit(count);
         squareRoots.forEach(System.out::println);
@@ -69,6 +71,6 @@ public class Main {
         Stream.iterate(new int[]{0, 1}, a -> new int[]{a[1], a[0] + a[1]})
                 .limit(count)
                 .map(x -> x[0])
-                .forEach(System.out::println);
+                .forEach(System.out::println);*/
     }
 }
